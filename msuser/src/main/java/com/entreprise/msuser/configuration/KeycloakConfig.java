@@ -1,6 +1,5 @@
 package com.entreprise.msuser.configuration;
 
-
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;

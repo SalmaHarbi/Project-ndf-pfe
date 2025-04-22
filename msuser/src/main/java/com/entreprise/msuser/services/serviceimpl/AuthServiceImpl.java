@@ -62,7 +62,6 @@ public class AuthServiceImpl implements AuthInterface {
         map.add(USERNAME, loginDto.username());
         map.add(PASSWORD, loginDto.password());
         map.add(CLIENT_ID, clientId);
-        map.add(CLIENT_SECRET, clientSecret);
         ResponseEntity<AccessTokenResponse> accessToken = keycloakClient.login(map);
         if (Objects.isNull(accessToken)) {
             throw new RuntimeException();
