@@ -13,6 +13,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -33,10 +34,6 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(fo -> fo.disable()))
                 .csrf(csrf->csrf.disable())
                 .authorizeHttpRequests((ar->ar.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/depense/**","/justif/**","/ndf/**").permitAll()))
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/user/**").hasAuthority("AdminSysteme"))
-                // .authorizeHttpRequests(ar->ar.requestMatchers("/user/{id}","/user/update/{id}","/user").hasAuthority("AdminFinance"))
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/user/{id}","/user/update/**").hasAuthority("Manager"))
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/user/{id}","/user/update/**").hasAuthority("Employee"))
                 .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
                 .oauth2ResourceServer(o2->o2.jwt(jwt->jwt.jwtAuthenticationConverter(jwtAuthConverter)))
                 .build();
@@ -46,10 +43,10 @@ public class SecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("*"));
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(List.of("*"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**",configuration);
         return source;

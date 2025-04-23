@@ -80,11 +80,11 @@ public class BatchConfig {
                     && depense.getMontant() != null
                     && depense.getMontantconverti() == null) {
 
-                BigDecimal montant = depense.getMontant();         // pas de valueOf
+                BigDecimal montant = depense.getMontant();
                 BigDecimal taux = depense.getTauxchange();
                 BigDecimal montantConverti = montant.multiply(taux);
 
-                depense.setMontantconverti(montantConverti); // maintenant on passe un BigDecimal
+                depense.setMontantconverti(montantConverti);
             }
             return depense;
         };

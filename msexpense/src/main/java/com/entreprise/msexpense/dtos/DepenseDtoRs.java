@@ -20,29 +20,22 @@ public class DepenseDtoRs {
 
     @NotNull
     private LocalDateTime datedepense;
-
     @NotNull
     private Categorie categorie;
-
     @NotEmpty
     private String description;
-
     @NotNull
     private BigDecimal montant;
-
+    @NotNull
     private String device;
-
+    @NotNull
     private BigDecimal tauxchange;
-
     private BigDecimal montantconverti;
-
+    @NotEmpty
     private String nomfournisseur;
-
     private String commentaire;
-
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
-
     private Boolean statut;
     private Long ndfId;
     private NdfRs ndfRs;

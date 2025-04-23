@@ -132,7 +132,6 @@ public class AuthServiceImpl implements AuthInterface {
         String username = principal.getName();
 
 
-        // Authenticate with old password
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
@@ -152,7 +151,6 @@ public class AuthServiceImpl implements AuthInterface {
         }
 
 
-        // Update password using Admin API
         List<UserRepresentation> users = keycloak.realm(realm).users().search(username);
         if (users.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
@@ -218,7 +216,6 @@ public class AuthServiceImpl implements AuthInterface {
 
         String keycloakUrl = serverUrl + REALMS + realm + PROTOCOL_OPEN_ID_CONNECT_TOKEN;
 
-        // Define request parameters
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add(GRANT_TYPE, CLIENT_CREDENTIALS);
         body.add(CLIENT_ID, clientId);
@@ -236,7 +233,6 @@ public class AuthServiceImpl implements AuthInterface {
                 Map.class
         );
 
-        // Extract access token
         return response.getBody().get(ACCESS_TOKEN).toString();
     }
 }

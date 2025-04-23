@@ -17,29 +17,22 @@ import java.time.LocalDateTime;
 public class DepenseDtoRq {
     @NotNull
     private LocalDateTime datedepense;
-
     @NotNull
     private Categorie categorie;
-
     @NotEmpty
     private String description;
-
     @NotNull
     private BigDecimal montant;
-
+    @NotNull
     private String device;
-
+    @NotNull
     private BigDecimal tauxchange;
-
     private BigDecimal montantconverti;
-
+    @NotEmpty
     private String nomfournisseur;
-
     private String commentaire;
     private Long ndfId;
-
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
-
     private Boolean statut;
 }
