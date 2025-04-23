@@ -5,6 +5,7 @@ import com.entreprise.msuser.dtos.UserDepDto;
 import com.entreprise.msuser.dtos.UserDtoRq;
 import com.entreprise.msuser.dtos.UserDtoRs;
 import com.entreprise.msuser.services.UtilisateurService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class UtilisateurController {
          this.utilisateurService=utilisateurService;
     }
 
+    @PreAuthorize("hasRole('admin')")
     @GetMapping("/get/{id}")
     public UserDtoRs getById(@PathVariable("id") Long id) {
         return utilisateurService.getById(id);

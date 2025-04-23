@@ -22,10 +22,9 @@ public interface KeycloakClient {
 
 
 
-    @PostMapping(value = "/realms/{realm}/protocol/openid-connect/logout",
+    @PostMapping(
+            value = "/realms/{realm}/protocol/openid-connect/logout",
             consumes = "application/x-www-form-urlencoded")
-    ResponseEntity<Void> logout(@PathVariable("realm") String realm,
-                                @RequestParam("client_id") String clientId,
-                                @RequestParam("client_secret") String clientSecret,
-                                @RequestParam("refresh_token") String refreshToken);
+    ResponseEntity<Void> logout(@PathVariable String realm, @RequestBody Map<String, ?> form);
+
 }
