@@ -1,5 +1,7 @@
 package com.entreprise.msuser.services.serviceimpl;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.JWT;
 import com.entreprise.msuser.configuration.KeycloakConfig;
 import com.entreprise.msuser.dtos.LoginDto;
 import com.entreprise.msuser.dtos.ResetPassword;
@@ -23,11 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import static com.entreprise.msuser.constants.Constants.*;
 
 import java.security.Principal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import java.util.*;
 
 
 @Service
@@ -235,4 +233,24 @@ public class AuthServiceImpl implements AuthInterface {
 
         return response.getBody().get(ACCESS_TOKEN).toString();
     }
-}
+
+
+    public List<String> getUserRoles(String accessToken) {
+        try {
+            DecodedJWT jwt = JWT.decode(accessToken);
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access").asMap();
+
+            if (realmAccess != null && realmAccess.containsKey("roles")) {
+                List<String> roles = (List<String>) realmAccess.get("roles");
+                return roles;
+            }
+
+            return Collections.emptyList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+    }
+
+

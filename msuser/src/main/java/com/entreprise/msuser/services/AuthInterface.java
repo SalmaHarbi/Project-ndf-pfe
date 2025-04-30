@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -18,6 +19,5 @@ public interface AuthInterface {
     Map<String, Object> refreshAccessToken(refreshTokenDto refreshToken);
     ResponseEntity<String> resetPassword(ResetPassword request,Principal principal);
     ResponseEntity<String> forgotPassword( String email);
-
 
 }
