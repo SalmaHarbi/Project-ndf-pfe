@@ -22,7 +22,7 @@ public class UtilisateurController {
          this.utilisateurService=utilisateurService;
     }
 
-    @PreAuthorize("hasRole('admin')")
+
     @GetMapping("/get/{id}")
     public UserDtoRs getById(@PathVariable("id") Long id) {
         return utilisateurService.getById(id);

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDtoRq {
 
+    private Long id ;
 
     @NotEmpty(message = "prenom should not be null")
     private String prenom;
@@ -32,7 +33,7 @@ public class UserDtoRq {
     private String photo;
 
     @NotNull(message = "statut should not be null")
-    private Boolean statut;
+    private Boolean statut=true;
 
     @NotNull(message = "departementId should not be null")
     private Long departementId;

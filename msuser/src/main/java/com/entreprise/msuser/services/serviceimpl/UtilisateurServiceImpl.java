@@ -55,20 +55,24 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public ApiResponse addUser(UserDtoRq userDtoRq) {
-        Utilisateur utilisateur=utilisateurMapper.toEntity(userDtoRq);
+        Utilisateur utilisateur = utilisateurMapper.toEntity(userDtoRq);
 
-        Departement departement = departementRepository.findById(userDtoRq.getDepartementId())
-                .orElseThrow(() -> new RuntimeException("Département introuvable"));
+        // Vérifier si un département a été fourni
+        if (userDtoRq.getDepartementId() != null) {
+            Departement departement = departementRepository.findById(userDtoRq.getDepartementId())
+                    .orElseThrow(() -> new RuntimeException("Département introuvable"));
+            utilisateur.setDepartement(departement);
+        } else {
+            utilisateur.setDepartement(null); // ou ignorer cette ligne
+        }
 
-        utilisateur.setDepartement(departement);
         utilisateurRepository.save(utilisateur);
+
         return ApiResponse.builder()
                 .id(utilisateur.getId())
-                .message("User has been saved successfuly")
+                .message("User has been saved successfully")
                 .build();
     }
 

@@ -26,6 +26,7 @@ public class Utilisateur {
     private Boolean statut;
     private LocalDateTime datecreation = LocalDateTime.now();
 
+
     @ManyToOne
     private Departement departement;
 
