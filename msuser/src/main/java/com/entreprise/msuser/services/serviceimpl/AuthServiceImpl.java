@@ -3,16 +3,17 @@ package com.entreprise.msuser.services.serviceimpl;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.JWT;
 import com.entreprise.msuser.configuration.KeycloakConfig;
-import com.entreprise.msuser.dtos.LoginDto;
-import com.entreprise.msuser.dtos.ResetPassword;
-import com.entreprise.msuser.dtos.TokenDto;
-import com.entreprise.msuser.dtos.refreshTokenDto;
+import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.feign.KeycloakClient;
+import com.entreprise.msuser.mappers.UtilisateurMapper;
+import com.entreprise.msuser.repositories.UserRepository;
+import com.entreprise.msuser.repositories.UtilisateurRepository;
 import com.entreprise.msuser.services.AuthInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -36,16 +37,22 @@ public class AuthServiceImpl implements AuthInterface {
     private final KeycloakConfig keycloakConfig;
     private Keycloak keycloak;
     private final RestTemplate restTemplate;
+    private UserRepository utilisateurRepository;
+    private UtilisateurMapper utilisateurMapper;
 
 
     public AuthServiceImpl(KeycloakClient keycloakClient,
                            KeycloakConfig keycloakConfig,
                            Keycloak keycloak,
-                           RestTemplate restTemplate){
-        this.keycloakClient=keycloakClient;
-        this.keycloakConfig=keycloakConfig;
-        this.keycloak=keycloak;
-        this.restTemplate=restTemplate;
+                           RestTemplate restTemplate,
+                           UserRepository utilisateurRepository,
+                           UtilisateurMapper utilisateurMapper) {
+        this.keycloakClient = keycloakClient;
+        this.keycloakConfig = keycloakConfig;
+        this.keycloak = keycloak;
+        this.restTemplate = restTemplate;
+        this.utilisateurMapper=utilisateurMapper;
+        this.utilisateurRepository=utilisateurRepository;
     }
 
     @Value("${authorization.realm}")
@@ -251,6 +258,43 @@ public class AuthServiceImpl implements AuthInterface {
             return Collections.emptyList();
         }
     }
+
+    @Override
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserRepresentation> users = keycloakConfig.keycloak()
+                .realms()
+                .realm(realm)
+                .users()
+                .list();
+
+        List<UserDto> userDtos = users.stream()
+                .map(user -> {
+                    // Retrieve roles of the user
+                    List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
+                            .realms()
+                            .realm(realm)
+                            .users()
+                            .get(user.getId()) // Use user's ID to fetch their roles
+                            .roles()
+                            .realmLevel()
+                            .listEffective();
+
+
+
+                    return UserDto.builder()
+                            .username(user.getUsername())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .email(user.getEmail())
+                            .build();
+                })
+                .toList();
+
+
+        userDtos.forEach(user -> utilisateurRepository.save(utilisateurMapper.userDtoToUser(user)));
+        return ResponseEntity.ok(userDtos);
+
     }
+}
 
 

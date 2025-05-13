@@ -33,6 +33,8 @@ public class NoteDeFraisController {
         return ndf;
     }
 
+
+
     @GetMapping("/getAll")
     public List<NdfRs> getAllNDFs() {
         List<NdfRs> ndfs = noteDeFrais.getAllNoteDeFrais();
@@ -44,6 +46,14 @@ public class NoteDeFraisController {
         }
         return ndfs;
     }
+
+    @GetMapping("/getAl")
+    public List<Ndfs> getAllNDs() {
+        return noteDeFrais.getAll();
+    }
+
+    @GetMapping("/getId/{id}")
+    public NdfRs getId(@PathVariable("id") Long id){return noteDeFrais.getById(id);}
 
     @PostMapping("/add")
     public ApiResponse createNDF(@RequestBody NdfUser noteDeFrai) {

@@ -1,10 +1,7 @@
 package com.entreprise.msuser.controllers;
 
 
-import com.entreprise.msuser.dtos.LoginDto;
-import com.entreprise.msuser.dtos.ResetPassword;
-import com.entreprise.msuser.dtos.TokenDto;
-import com.entreprise.msuser.dtos.refreshTokenDto;
+import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.services.serviceimpl.AuthServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +59,12 @@ public class AuthController {
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         return authService.forgotPassword(email);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return authService.getAllUsers();
+    }
+
 
 
 }

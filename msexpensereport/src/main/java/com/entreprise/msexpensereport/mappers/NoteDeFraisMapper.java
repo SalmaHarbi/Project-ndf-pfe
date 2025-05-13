@@ -3,6 +3,7 @@ package com.entreprise.msexpensereport.mappers;
 
 import com.entreprise.msexpensereport.dtos.NdfRs;
 import com.entreprise.msexpensereport.dtos.NdfUser;
+import com.entreprise.msexpensereport.dtos.Ndfs;
 import com.entreprise.msexpensereport.entities.NoteDeFrais;
 import org.mapstruct.*;
 
@@ -12,6 +13,8 @@ public interface NoteDeFraisMapper {
     NoteDeFrais toEntity(NdfUser noteDeFraisDto);
 
     NdfRs toDto(NoteDeFrais noteDeFrais);
+
+    Ndfs toDtos(NoteDeFrais noteDeFrais);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     NoteDeFrais partialUpdate(NdfUser noteDeFraisDto, @MappingTarget NoteDeFrais noteDeFrais);

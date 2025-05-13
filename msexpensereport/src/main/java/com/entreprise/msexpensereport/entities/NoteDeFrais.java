@@ -37,7 +37,7 @@ public class NoteDeFrais {
 
     private Float montanttotal;
 
-    private Boolean statutDisable;
+    private Boolean statutDisable=true;
 
     private Long userId;
 

@@ -19,7 +19,8 @@ public class DepenseController {
 
 
     public DepenseController(DepenseImpl depense,
-                             NdfRestClient ndfRestClient, DepenseImpl depenseImpl){
+                             NdfRestClient ndfRestClient, DepenseImpl depenseImpl
+                             ){
         this.depense=depense;
         this.ndfRestClient=ndfRestClient;
         this.depenseImpl = depenseImpl;
@@ -30,8 +31,8 @@ public class DepenseController {
         DepenseDtoRs depenseDtoRs = depense.getById(id);
 
         if (depenseDtoRs.getNdfId() != null) {
-            NdfRs ndfRs = ndfRestClient.getById(depenseDtoRs.getNdfId());
-            depenseDtoRs.setNdfRs(ndfRs);
+            Ndfs ndfs = ndfRestClient.getId(depenseDtoRs.getNdfId());
+            depenseDtoRs.setNdfs(ndfs);
         }
         return depenseDtoRs;
     }
@@ -42,12 +43,15 @@ public class DepenseController {
         List<DepenseDtoRs> depenseDtoRs=depenseImpl.getAllDepense();
         for (DepenseDtoRs depense : depenseDtoRs){
             if(depense.getNdfId() != null){
-                NdfRs ndfRs = ndfRestClient.getById(depense.getNdfId());
-                depense.setNdfRs(ndfRs);
+                Ndfs ndfRs = ndfRestClient.getId(depense.getNdfId());
+                depense.setNdfs(ndfRs);
             }
         }
         return depenseDtoRs;
     }
+
+
+
 
     @PostMapping("/add")
     public ApiResponse createDepense(@RequestBody DepenseDtoRq depenseDto) {

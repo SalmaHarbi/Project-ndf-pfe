@@ -34,5 +34,5 @@ public class DepenseDtoRq {
     private Long ndfId;
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
-    private Boolean statut;
+    private Boolean statut=true;
 }

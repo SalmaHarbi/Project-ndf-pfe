@@ -1,6 +1,6 @@
 package com.entreprise.msexpense.entities;
 
-import com.entreprise.msexpense.dtos.NdfRs;
+import com.entreprise.msexpense.dtos.Ndfs;
 import com.entreprise.msexpense.entities.Enum.Categorie;
 import com.entreprise.msexpense.entities.Enum.Indicateurfiscabilte;
 import jakarta.persistence.*;
@@ -32,10 +32,9 @@ public class Depense {
     private BigDecimal montantconverti;
     private String nomfournisseur;
     private String commentaire;
-    private Boolean statut;
+    private Boolean statut=true;
 
     private Long ndfId;
-
 
     @Enumerated(EnumType.STRING)
     private Indicateurfiscabilte indicateurfiscabilte;
@@ -44,5 +43,7 @@ public class Depense {
     private Collection<Justificatif> justificatifs;
 
     @Transient
-    private NdfRs ndfRs;
+    private Ndfs ndfs;
+
+
 }

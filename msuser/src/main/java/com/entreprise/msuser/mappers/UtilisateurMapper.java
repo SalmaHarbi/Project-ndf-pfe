@@ -1,8 +1,10 @@
 package com.entreprise.msuser.mappers;
 
 import com.entreprise.msuser.dtos.UserDepDto;
+import com.entreprise.msuser.dtos.UserDto;
 import com.entreprise.msuser.dtos.UserDtoRq;
 import com.entreprise.msuser.dtos.UserDtoRs;
+import com.entreprise.msuser.entities.User;
 import com.entreprise.msuser.entities.Utilisateur;
 import org.mapstruct.*;
 
@@ -12,7 +14,7 @@ public interface UtilisateurMapper {
     @Mapping(target = "statut",defaultValue = "true")
     Utilisateur toEntity(UserDtoRq userDtoRq);
 
-
+    User userDtoToUser(UserDto userDtoRq);
     UserDtoRq toDto(Utilisateur utilisateur);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

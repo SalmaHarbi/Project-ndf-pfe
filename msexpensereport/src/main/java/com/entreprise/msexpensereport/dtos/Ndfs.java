@@ -1,9 +1,6 @@
 package com.entreprise.msexpensereport.dtos;
 
 import com.entreprise.msexpensereport.entities.Enum.Statut;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,30 +11,14 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class NdfRq {
+public class Ndfs {
     private String titre;
-
-    private LocalDateTime datesoumission=LocalDateTime.now();
-
+    private LocalDateTime datesoumission;
     private String motifnotefrais;
-
-    @Enumerated(EnumType.STRING)
     private Statut statut;
-
     private String commentaire;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate dateapprobationrejet;
-
     private String raisondurejet;
-
     private Float montanttotal;
     private Boolean statutDisable=true;
-    private Long UserId;
-
-
-    private UserDtoRs userDtoRs;
-
-
-
 }

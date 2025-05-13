@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NdfRs {
+    private Long id;
     private String titre;
 
     private LocalDateTime datesoumission=LocalDateTime.now();

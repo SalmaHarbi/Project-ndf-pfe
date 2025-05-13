@@ -33,6 +33,11 @@ public class NoteDeFraisImpl implements NoteDeFraisInterface {
         NoteDeFrais noteDeFrais= noteDeFraisRepository.findById(id).orElse(null);
         return noteDeFraisMapper.toDto(noteDeFrais);
     }
+    @Override
+    public Ndfs getId(Long id) {
+        NoteDeFrais noteDeFrais= noteDeFraisRepository.findById(id).orElse(null);
+        return noteDeFraisMapper.toDtos(noteDeFrais);
+    }
 
     @Override
     public List<NdfRs> getAllNoteDeFrais() {
@@ -67,6 +72,11 @@ public class NoteDeFraisImpl implements NoteDeFraisInterface {
     @Override
     public ApiResponse updateNoteDeFrais(Long id, NdfUser noteDeFraisDto) {
         NoteDeFrais noteDeFrais= noteDeFraisRepository.findById(id).orElse(null);
+        if (noteDeFrais == null) {
+            return ApiResponse.builder()
+                    .message("Note de frais not found")
+                    .build();
+        }
         noteDeFraisMapper.partialUpdate(noteDeFraisDto,noteDeFrais);
         noteDeFraisRepository.save(noteDeFrais);
         return ApiResponse.builder()
@@ -74,4 +84,14 @@ public class NoteDeFraisImpl implements NoteDeFraisInterface {
                 .message("Note de frais has been updated successfuly")
                 .build();
     }
+
+    @Override
+    public List<Ndfs> getAll() {
+        List<NoteDeFrais> noteDeFraisList = noteDeFraisRepository.findAllNoteDeFraisByStatut(true);
+        List<Ndfs> ndfRs = new ArrayList<>();
+        noteDeFraisList.forEach(e->ndfRs.add(noteDeFraisMapper.toDtos(e)));
+        return ndfRs;
+    }
+
+
 }

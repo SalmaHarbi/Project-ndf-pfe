@@ -17,6 +17,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepenseDtoRs {
+    private Long id;
 
     @NotNull
     private LocalDateTime datedepense;
@@ -38,7 +39,7 @@ public class DepenseDtoRs {
     private Indicateurfiscabilte indicateurfiscabilte;
     private Boolean statut;
     private Long ndfId;
-    private NdfRs ndfRs;
+    private Ndfs ndfs;
     private Collection<Justificatif> justificatifs;
 
 }
