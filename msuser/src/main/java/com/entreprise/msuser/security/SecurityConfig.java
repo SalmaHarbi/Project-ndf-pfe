@@ -32,9 +32,10 @@ public class SecurityConfig {
                 .headers(h -> h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((ar -> ar.requestMatchers("/swagger-ui/**",
-                        "/v3/api-docs/**", "/swagger-ui.html", "/ndf/**", "/user/**").permitAll()))
+                        "/v3/api-docs/**", "/swagger-ui.html", "/ndf/**").permitAll()))
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/auth/login/**").permitAll())
-                .authorizeHttpRequests(ar -> ar.requestMatchers("/auth/**").permitAll())
+               // .authorizeHttpRequests(ar -> ar.requestMatchers("/auth/**").permitAll())
+                .authorizeHttpRequests((ar -> ar.requestMatchers("/auth/**").permitAll()))
 
                 .authorizeHttpRequests(ar -> ar.anyRequest().permitAll())
                 .oauth2ResourceServer(o2 -> o2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter)))

@@ -2,6 +2,7 @@ package com.entreprise.msexpense.dtos;
 
 import com.entreprise.msexpense.entities.Enum.Categorie;
 import com.entreprise.msexpense.entities.Enum.Indicateurfiscabilte;
+import com.entreprise.msexpense.entities.Justificatif;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +37,6 @@ public class DepenseDtoRq {
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
     private Boolean statut=true;
+    private Collection<Justificatif> justificatifs;
+
 }

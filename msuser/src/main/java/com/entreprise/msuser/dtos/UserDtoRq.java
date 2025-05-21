@@ -15,17 +15,17 @@ public class UserDtoRq {
 
     private Long id ;
 
-    @NotEmpty(message = "prenom should not be null")
-    private String prenom;
+    @NotEmpty(message = "lastname should not be null")
+    private String lastname;
 
-    @NotEmpty(message = "nom should not be null")
-    private String nom;
+    @NotEmpty(message = "firstname should not be null")
+    private String firstname;
 
     @NotEmpty(message = "email should not be null")
     private String email;
 
-    @NotEmpty(message = "motdepasse should not be null")
-    private String motdepasse;
+    @NotEmpty(message = "password should not be null")
+    private String password;
 
     @NotEmpty(message = "role should not be null")
     private String role;

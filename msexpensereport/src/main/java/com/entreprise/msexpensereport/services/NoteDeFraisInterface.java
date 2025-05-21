@@ -5,14 +5,29 @@ import com.entreprise.msexpensereport.dtos.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface NoteDeFraisInterface {
     NdfRs getById(Long id);
-    List<NdfRs> getAllNoteDeFrais();
+   // List<NdfRs> getAllNoteDeFrais();
     ApiResponse addNoteDeFrais(NdfUser noteDeFraisDto);
     ApiResponse deleteNoteDeFrais(Long id);
     ApiResponse updateNoteDeFrais(Long id,NdfUser noteDeFraisDto);
-    List<Ndfs> getAll();
+    List<Ndfs> getAllStatutBrouillon();
+    List<Ndfs> getAllStatutApprouver();
+    List<Ndfs> getAllStatutRejeter();
+    List<Ndfs> getAllStatutRembourse();
+    List<NdfRs> getAllStatutSoumise();
     Ndfs getId(Long id);
+    ApiResponse changeStatutToSoumis(Long id);
+    ApiResponse changeStatutToApprouver(Long id);
+    ApiResponse changeStatutToReject(Long id);
+    ApiResponse changeStatutToRembourse(Long id);
+    Long getNombreNotesSoumises();
+    Long getNombreNotesRembourser();
+    Long getNombreNotesApprouver();
+    Long getNombreNotesRejeter();
+    Map<String, Map<String, Long>> getStatsParMoisEtStatut();
+
 }

@@ -3,8 +3,12 @@ package com.entreprise.msuser.controllers;
 
 import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.services.serviceimpl.AuthServiceImpl;
+import org.keycloak.adapters.spi.KeycloakAccount;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -14,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+
 
     private final AuthServiceImpl authService;
 
@@ -60,10 +65,18 @@ public class AuthController {
         return authService.forgotPassword(email);
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        return authService.getAllUsers();
+
+
+
+
+
+    @GetMapping("/all-users")
+    public ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers() {
+        return authService.getKeycloakUsers();
     }
+
+
+
 
 
 

@@ -14,6 +14,7 @@ public class DepDtoRq {
 
     @NotEmpty(message = "nom should not be null")
     private String nom;
+    private String image;
 
     @NotEmpty(message = "centre de cout should not be null")
     private String centredecout;

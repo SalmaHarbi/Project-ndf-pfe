@@ -1,6 +1,7 @@
 package com.entreprise.msuser.services;
 
 import com.entreprise.msuser.dtos.*;
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,6 @@ public interface AuthInterface {
     Map<String, Object> refreshAccessToken(refreshTokenDto refreshToken);
     ResponseEntity<String> resetPassword(ResetPassword request,Principal principal);
     ResponseEntity<String> forgotPassword( String email);
-    public ResponseEntity<List<UserDto>> getAllUsers();
+    ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers();
+
 }

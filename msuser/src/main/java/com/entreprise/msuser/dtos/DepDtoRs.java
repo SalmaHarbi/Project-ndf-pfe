@@ -20,6 +20,7 @@ public class DepDtoRs {
 
     @NotEmpty(message = "centre de cout should not be null")
     private String centredecout;
+    private String image;
 
     private Collection<UserDepDto> utilisateurs;
 }

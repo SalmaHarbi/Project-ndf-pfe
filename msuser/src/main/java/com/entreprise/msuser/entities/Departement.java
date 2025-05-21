@@ -19,6 +19,8 @@ public class Departement {
 
     private String nom;
     private String centredecout;
+    private String image;
+
 
     @OneToMany(mappedBy = "departement")
     private Collection<Utilisateur> utilisateurs;

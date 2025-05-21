@@ -1,5 +1,7 @@
 package com.entreprise.msexpense.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class Justificatif {
 
     private LocalDateTime dateupload = LocalDateTime.now();
 
+    @JsonBackReference
     @ManyToOne
     private Depense depense;
 }

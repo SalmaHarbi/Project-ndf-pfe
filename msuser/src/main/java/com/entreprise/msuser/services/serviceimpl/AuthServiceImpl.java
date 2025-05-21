@@ -5,15 +5,14 @@ import com.auth0.jwt.JWT;
 import com.entreprise.msuser.configuration.KeycloakConfig;
 import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.feign.KeycloakClient;
-import com.entreprise.msuser.mappers.UtilisateurMapper;
-import com.entreprise.msuser.repositories.UserRepository;
-import com.entreprise.msuser.repositories.UtilisateurRepository;
+import com.entreprise.msuser.mappers.KeycloakUserMapper;
+import org.keycloak.representations.idm.RoleRepresentation;
 import com.entreprise.msuser.services.AuthInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -37,22 +36,19 @@ public class AuthServiceImpl implements AuthInterface {
     private final KeycloakConfig keycloakConfig;
     private Keycloak keycloak;
     private final RestTemplate restTemplate;
-    private UserRepository utilisateurRepository;
-    private UtilisateurMapper utilisateurMapper;
+    private final KeycloakUserMapper keycloakUserMapper ;
 
 
     public AuthServiceImpl(KeycloakClient keycloakClient,
                            KeycloakConfig keycloakConfig,
                            Keycloak keycloak,
                            RestTemplate restTemplate,
-                           UserRepository utilisateurRepository,
-                           UtilisateurMapper utilisateurMapper) {
+                           KeycloakUserMapper keycloakUserMapper) {
         this.keycloakClient = keycloakClient;
         this.keycloakConfig = keycloakConfig;
         this.keycloak = keycloak;
         this.restTemplate = restTemplate;
-        this.utilisateurMapper=utilisateurMapper;
-        this.utilisateurRepository=utilisateurRepository;
+        this.keycloakUserMapper=keycloakUserMapper;
     }
 
     @Value("${authorization.realm}")
@@ -142,7 +138,7 @@ public class AuthServiceImpl implements AuthInterface {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add(GRANT_TYPE, PASSWORD);
         body.add(CLIENT_ID, clientId);
-        body.add(CLIENT_SECRET, clientSecret);
+
         body.add(USERNAME, username);
         body.add(PASSWORD, request.getOldPassword());
 
@@ -259,42 +255,59 @@ public class AuthServiceImpl implements AuthInterface {
         }
     }
 
+
+
+
+
+
     @Override
-    public ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers() {
         List<UserRepresentation> users = keycloakConfig.keycloak()
                 .realms()
                 .realm(realm)
                 .users()
                 .list();
 
-        List<UserDto> userDtos = users.stream()
+        List<UserDtoRsKey> userDtoskey = users.stream()
                 .map(user -> {
                     // Retrieve roles of the user
                     List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
                             .realms()
                             .realm(realm)
                             .users()
-                            .get(user.getId()) // Use user's ID to fetch their roles
+                            .get(user.getId())
                             .roles()
                             .realmLevel()
                             .listEffective();
 
+                    List<String> roleNames = realmRoles.stream()
+                            .map(RoleRepresentation::getName)
+                            .toList();
 
+                    // Safe access to department attribute
+                    String department = "";
+                    if (user.getAttributes() != null && user.getAttributes().containsKey("department")) {
+                        department = user.getAttributes().get("department").get(0);
+                    }
 
-                    return UserDto.builder()
+                    return UserDtoRsKey.builder()
                             .username(user.getUsername())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
                             .email(user.getEmail())
+                            .department(department)
+                            .roles(roleNames)
                             .build();
                 })
                 .toList();
 
-
-        userDtos.forEach(user -> utilisateurRepository.save(utilisateurMapper.userDtoToUser(user)));
-        return ResponseEntity.ok(userDtos);
-
+        return ResponseEntity.ok(userDtoskey);
     }
+
+
+
+
+
 }
 
 

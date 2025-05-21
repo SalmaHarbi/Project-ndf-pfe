@@ -10,8 +10,11 @@ import com.entreprise.msexpense.repositories.DepenseRepository;
 import com.entreprise.msexpense.services.DepenseInterface;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DepenseImpl implements DepenseInterface {
@@ -72,4 +75,52 @@ public class DepenseImpl implements DepenseInterface {
                 .build();
 
     }
+    @Override
+    public BigDecimal getMontantTotalDesDepensesActives() {
+        return depenseRepository.getTotalMontantConvertiByStatut(true);
+    }
+
+    @Override
+    public List<Map<String, Object>> getMontantParCategorie() {
+        List<Object[]> results = depenseRepository.getDepenseMontantParCategorie();
+        List<Map<String, Object>> response = new ArrayList<>();
+
+        for (Object[] result : results) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("categorie", result[0]);
+            data.put("montant", result[1]);
+            response.add(data);
+        }
+
+        return response;
+    }
+    @Override
+    public List<Map<String, Object>> getDepenseParMois() {
+        List<Object[]> resultats = depenseRepository.getDepensesGroupByMonth(); // ou getDepensesGroupByYearAndMonth
+        List<Map<String, Object>> reponse = new ArrayList<>();
+
+        for (Object[] row : resultats) {
+            Map<String, Object> map = new HashMap<>();
+
+            Object moisRaw = row[0];
+            int mois;
+
+            if (moisRaw instanceof Number) {
+                mois = ((Number) moisRaw).intValue(); // Gère Integer, Double, BigDecimal, etc.
+            } else {
+                throw new IllegalArgumentException("Type de mois inattendu : " + moisRaw.getClass());
+            }
+
+            BigDecimal montant = (BigDecimal) row[1];
+
+            map.put("mois", mois);
+            map.put("montant", montant);
+            reponse.add(map);
+        }
+
+        return reponse;
+    }
+
+
+
 }

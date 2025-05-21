@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NdfUser {
+    private Long id;
     private String titre;
     private LocalDateTime datesoumission;
     private String motifnotefrais;
