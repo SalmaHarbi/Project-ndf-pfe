@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class UserDepDto {
-    private String nom;
-    private String prenom;
+    private String lastname;
+    private String firstname;
     private String email;
     private String role;
 }

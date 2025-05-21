@@ -25,7 +25,7 @@ public interface UtilisateurMapper {
     Utilisateur partialUpdate(UserDtoRs userDtoRs,@MappingTarget Utilisateur utilisateur);
 
     @Mapping(target ="firstname")
-    @Mapping(target = "firstname")
+    @Mapping(target = "lastname")
     @Mapping(target = "email")
     @Mapping(target = "role")
     UserDepDto toUtilisateurLightDto(Utilisateur utilisateur);
