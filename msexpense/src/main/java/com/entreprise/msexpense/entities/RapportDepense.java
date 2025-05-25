@@ -21,7 +21,7 @@ public class RapportDepense {
 
     private String cheminRapport;
 
-    @OneToOne(mappedBy = "depense")
+    @OneToOne
     private Depense depense;
 
 

@@ -46,7 +46,7 @@ public class Depense {
 
     private Long ndfId;
 
-    @OneToOne
+    @OneToOne(mappedBy = "depense")
     private RapportDepense rapport;
 
 }
