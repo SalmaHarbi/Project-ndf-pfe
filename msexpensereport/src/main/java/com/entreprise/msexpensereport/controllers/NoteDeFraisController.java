@@ -1,14 +1,18 @@
 package com.entreprise.msexpensereport.controllers;
 
 import com.entreprise.msexpensereport.dtos.*;
+import com.entreprise.msexpensereport.entities.NoteDeFrais;
+import com.entreprise.msexpensereport.feign.DepenseRestClient;
 import com.entreprise.msexpensereport.feign.UserRestClient;
+import com.entreprise.msexpensereport.mappers.NoteDeFraisMapper;
+import com.entreprise.msexpensereport.repositories.NoteDeFraisRepository;
 import com.entreprise.msexpensereport.services.serviceImpl.NoteDeFraisImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/ndf")
@@ -16,43 +20,68 @@ public class NoteDeFraisController {
 
     private final NoteDeFraisImpl noteDeFrais;
     private final UserRestClient userRestClient;
+    private final NoteDeFraisRepository noteDeFraisRepository;
+    private final NoteDeFraisMapper noteDeFraisMapper;
+    private final DepenseRestClient depenseRestClient;
 
     public NoteDeFraisController(NoteDeFraisImpl noteDeFrais,
-                                 UserRestClient userRestClient){
+                                 UserRestClient userRestClient,
+                                 NoteDeFraisRepository noteDeFraisRepository,
+                                 NoteDeFraisMapper noteDeFraisMapper,
+                                 DepenseRestClient depenseRestClient){
         this.noteDeFrais=noteDeFrais;
         this.userRestClient=userRestClient;
+        this.noteDeFraisRepository=noteDeFraisRepository;
+        this.noteDeFraisMapper=noteDeFraisMapper;
+        this.depenseRestClient=depenseRestClient;
     }
 
-    @GetMapping("/get/{id}")
-    public NdfRs getNDFById(@PathVariable("id") Long id) {
-        NdfRs ndf = noteDeFrais.getById(id);
+    @GetMapping("/{titre}")
+    public List<Ndfs> getByNom(@PathVariable String titre) {
+        List<NoteDeFrais> notes = noteDeFraisRepository.findByTitre(titre);
+        if (notes.isEmpty()) {
+            throw new RuntimeException("Aucune note de frais trouvée avec le titre : " + titre);
+        }
+        return noteDeFraisMapper.toDtoss(notes);
+    }
 
-        if (ndf.getUserId() != null) {
+
+
+
+    @GetMapping("/get/{id}")
+    public Ndfs getNDFById(@PathVariable("id") Long id) {
+        Ndfs ndf = noteDeFrais.getById(id);
+
+        if (ndf.getUserId() != null && ndf.getDepenseId() != null) {
             UserDtoRs user = userRestClient.getById(ndf.getUserId());
+            DepenseDtoRs depenseDtoRs = depenseRestClient.getDepenseById(ndf.getDepenseId());
             ndf.setUser(user);
+            ndf.setDepenses(depenseDtoRs);
         }
 
         return ndf;
     }
 
-   /* @GetMapping("/getAll")
-    public List<NdfRs> getAllNDFs() {
-        List<NdfRs> ndfs = noteDeFrais.getAllNoteDeFrais();
-        for (NdfRs ndf : ndfs) {
-            if (ndf.getUserId() != null) {
+   @GetMapping("/getAll")
+    public List<Ndfs> getAllNDFs() {
+        List<Ndfs> ndfs = noteDeFrais.getAllNoteDeFrais();
+        for (Ndfs ndf : ndfs) {
+            if (ndf.getUserId() != null && ndf.getDepenseId() != null) {
                 UserDtoRs user = userRestClient.getById(ndf.getUserId());
+                DepenseDtoRs depenseDtoRs = depenseRestClient.getDepenseById(ndf.getDepenseId());
                 ndf.setUser(user);
+                ndf.setDepenses(depenseDtoRs);
             }
         }
         return ndfs;
-    }*/
+    }
 
     @GetMapping("/getStatBrouillon")
     public List<Ndfs> getAllNDbrouillon() {
         return noteDeFrais.getAllStatutBrouillon();
     }
     @GetMapping("/getStatSoumise")
-    public List<NdfRs> getAllNDsoumise() {
+    public List<Ndfs> getAllNDsoumise() {
         return noteDeFrais.getAllStatutSoumise();
     }
     @GetMapping("/getStatApprouver")
@@ -68,8 +97,7 @@ public class NoteDeFraisController {
         return noteDeFrais.getAllStatutRembourse();
     }
 
-    @GetMapping("/getId/{id}")
-    public NdfRs getId(@PathVariable("id") Long id){return noteDeFrais.getById(id);}
+
 
     @PostMapping("/add")
     public ApiResponse createNDF(@RequestBody NdfUser noteDeFrai) {

@@ -17,8 +17,12 @@ import java.util.Collection;
 @NoArgsConstructor
 @Data
 public class DepenseDtoRq {
+
     @NotNull
     private LocalDateTime datedepense;
+
+    private String nom;
+
     @NotNull
     private Categorie categorie;
     @NotEmpty
@@ -33,10 +37,12 @@ public class DepenseDtoRq {
     @NotEmpty
     private String nomfournisseur;
     private String commentaire;
-    private Long ndfId;
+
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
-    private Boolean statut=true;
-    private Collection<Justificatif> justificatifs;
+
+    private Collection<JustificatifDto> justificatifs;
+
+    private Long ndfId;
 
 }

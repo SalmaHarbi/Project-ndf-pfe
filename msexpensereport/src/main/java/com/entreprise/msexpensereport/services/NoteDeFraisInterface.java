@@ -9,8 +9,8 @@ import java.util.Map;
 
 @Service
 public interface NoteDeFraisInterface {
-    NdfRs getById(Long id);
-   // List<NdfRs> getAllNoteDeFrais();
+    Ndfs getById(Long id);
+   List<Ndfs> getAllNoteDeFrais();
     ApiResponse addNoteDeFrais(NdfUser noteDeFraisDto);
     ApiResponse deleteNoteDeFrais(Long id);
     ApiResponse updateNoteDeFrais(Long id,NdfUser noteDeFraisDto);
@@ -18,8 +18,7 @@ public interface NoteDeFraisInterface {
     List<Ndfs> getAllStatutApprouver();
     List<Ndfs> getAllStatutRejeter();
     List<Ndfs> getAllStatutRembourse();
-    List<NdfRs> getAllStatutSoumise();
-    Ndfs getId(Long id);
+    List<Ndfs> getAllStatutSoumise();
     ApiResponse changeStatutToSoumis(Long id);
     ApiResponse changeStatutToApprouver(Long id);
     ApiResponse changeStatutToReject(Long id);

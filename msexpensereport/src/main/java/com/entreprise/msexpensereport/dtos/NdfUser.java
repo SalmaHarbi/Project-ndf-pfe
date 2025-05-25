@@ -23,4 +23,5 @@ public class NdfUser {
     private Float montanttotal;
     private Boolean statutDisable=true;
     private Long userId;
+    private Long depenseId;
 }

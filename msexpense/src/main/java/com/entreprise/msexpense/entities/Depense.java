@@ -1,8 +1,8 @@
 package com.entreprise.msexpense.entities;
 
-import com.entreprise.msexpense.dtos.Ndfs;
 import com.entreprise.msexpense.entities.Enum.Categorie;
 import com.entreprise.msexpense.entities.Enum.Indicateurfiscabilte;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor
 @Data
@@ -21,6 +20,7 @@ public class Depense {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String nom;
 
     private LocalDateTime datedepense = LocalDateTime.now();
 
@@ -36,18 +36,17 @@ public class Depense {
     private String commentaire;
     private Boolean statut=true;
 
-
-    private Long ndfId;
-
     @Enumerated(EnumType.STRING)
     private Indicateurfiscabilte indicateurfiscabilte;
 
-    @OneToMany(mappedBy = "depense")
+    @OneToMany(mappedBy = "depense", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @JsonIgnore
     private Collection<Justificatif> justificatifs;
 
-    @Transient
-    private Ndfs ndfs;
+    private Long ndfId;
 
+    @OneToOne
+    private RapportDepense rapport;
 
 }

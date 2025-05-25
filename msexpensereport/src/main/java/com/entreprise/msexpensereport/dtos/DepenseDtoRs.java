@@ -1,8 +1,7 @@
-package com.entreprise.msexpense.dtos;
+package com.entreprise.msexpensereport.dtos;
 
-import com.entreprise.msexpense.entities.Enum.Categorie;
-import com.entreprise.msexpense.entities.Enum.Indicateurfiscabilte;
-import com.entreprise.msexpense.entities.Justificatif;
+import com.entreprise.msexpensereport.entities.Enum.Categorie;
+import com.entreprise.msexpensereport.entities.Enum.Indicateurfiscabilte;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DepenseDtoRs {
-    private Long id;
+
 
     @NotNull
     private LocalDateTime datedepense;
@@ -40,10 +39,8 @@ public class DepenseDtoRs {
     private String commentaire;
     @NotNull
     private Indicateurfiscabilte indicateurfiscabilte;
+    private Collection<JustificatifDto> justificatifs;
 
-    private Collection<Justificatif> justificatifs;
 
-   private Long ndfId;
-   // private Ndfs ndfs;
 
 }

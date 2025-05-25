@@ -3,9 +3,12 @@ package com.entreprise.msexpense.services.serviceImpl;
 import com.entreprise.msexpense.dtos.ApiResponse;
 import com.entreprise.msexpense.dtos.DepenseDtoRq;
 import com.entreprise.msexpense.dtos.DepenseDtoRs;
+import com.entreprise.msexpense.dtos.Ndfs;
 import com.entreprise.msexpense.entities.Depense;
+import com.entreprise.msexpense.entities.Justificatif;
 import com.entreprise.msexpense.feign.NdfRestClient;
 import com.entreprise.msexpense.mappers.DepenseMapper;
+import com.entreprise.msexpense.mappers.JustificatifMapper;
 import com.entreprise.msexpense.repositories.DepenseRepository;
 import com.entreprise.msexpense.services.DepenseInterface;
 import org.springframework.stereotype.Service;
@@ -15,16 +18,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DepenseImpl implements DepenseInterface {
 
     private final DepenseRepository depenseRepository;
     private final DepenseMapper depenseMapper;
+    private  final JustificatifMapper justificatifMapper;
+    private final NdfRestClient ndfRestClient;
 
-    public DepenseImpl(DepenseRepository depenseRepository,DepenseMapper depenseMapper){
+    public DepenseImpl(DepenseRepository depenseRepository,
+                       DepenseMapper depenseMapper,
+                       JustificatifMapper justificatifMapper,
+                       NdfRestClient ndfRestClient){
         this.depenseRepository=depenseRepository;
         this.depenseMapper=depenseMapper;
+        this.justificatifMapper=justificatifMapper;
+        this.ndfRestClient=ndfRestClient;
     }
 
 
@@ -49,7 +60,7 @@ public class DepenseImpl implements DepenseInterface {
         depenseRepository.save(depense);
         return ApiResponse.builder()
                 .id(depense.getId())
-                .message("Depense has been saved successfuly")
+                .message("NoteDeFrais has been saved successfuly")
                 .build();
     }
 

@@ -1,6 +1,7 @@
 package com.entreprise.msexpense.repositories;
 
 import com.entreprise.msexpense.entities.Depense;
+import com.entreprise.msexpense.entities.Enum.Categorie;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DepenseRepository extends JpaRepository<Depense,Long> {
@@ -26,6 +28,8 @@ public interface DepenseRepository extends JpaRepository<Depense,Long> {
             "GROUP BY EXTRACT(MONTH FROM d.datedepense) " +
             "ORDER BY EXTRACT(MONTH FROM d.datedepense)")
     List<Object[]> getDepensesGroupByMonth();
+
+    Optional<Depense> findByNom(String nom);
 
 
 }

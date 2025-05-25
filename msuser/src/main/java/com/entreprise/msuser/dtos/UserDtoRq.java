@@ -32,11 +32,11 @@ public class UserDtoRq {
 
     private String photo;
 
-    @NotNull(message = "statut should not be null")
-    private Boolean statut=true;
+    @NotEmpty(message = "Name Department should not be null")
+    private String departementNom;
 
-    @NotNull(message = "departementId should not be null")
-    private Long departementId;
+
+
 
 
 }

@@ -20,7 +20,8 @@ public class Justificatif {
     private String nomfichierordinal;
     private String cheminstockage;
     private String typemime;
-    private Boolean statut;
+    private Boolean statut=true;
+    private String nom;
 
     private LocalDateTime dateupload = LocalDateTime.now();
 

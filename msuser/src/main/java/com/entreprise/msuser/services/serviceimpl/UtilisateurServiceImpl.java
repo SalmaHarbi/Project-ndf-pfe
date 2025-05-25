@@ -1,9 +1,6 @@
 package com.entreprise.msuser.services.serviceimpl;
 
-import com.entreprise.msuser.dtos.ApiResponse;
-import com.entreprise.msuser.dtos.UserDepDto;
-import com.entreprise.msuser.dtos.UserDtoRq;
-import com.entreprise.msuser.dtos.UserDtoRs;
+import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.entities.Departement;
 import com.entreprise.msuser.entities.Utilisateur;
 import com.entreprise.msuser.mappers.UtilisateurMapper;
@@ -12,6 +9,7 @@ import com.entreprise.msuser.repositories.UtilisateurRepository;
 import com.entreprise.msuser.services.UtilisateurService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,16 +54,33 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     }
 
     @Override
+    public List<UserDtoRs> getEmployee() {
+        List<Utilisateur> userList = utilisateurRepository.findAllByStatutAndRole(true, "Employee");
+        List<UserDtoRs> dtoList = new ArrayList<>();
+        userList.forEach(user -> dtoList.add(utilisateurMapper.toDtoRs(user)));
+        return dtoList;
+    }
+
+    @Override
+    public List<UserDtoRs> getManagers(){
+        List<Utilisateur> userList = utilisateurRepository.findAllByStatutAndRole(true, "Manager");
+        List<UserDtoRs> dtoList = new ArrayList<>();
+        userList.forEach(user -> dtoList.add(utilisateurMapper.toDtoRs(user)));
+        return dtoList;
+    }
+
+
+
+    @Override
     public ApiResponse addUser(UserDtoRq userDtoRq) {
         Utilisateur utilisateur = utilisateurMapper.toEntity(userDtoRq);
 
-        // Vérifier si un département a été fourni
-        if (userDtoRq.getDepartementId() != null) {
-            Departement departement = departementRepository.findById(userDtoRq.getDepartementId())
-                    .orElseThrow(() -> new RuntimeException("Département introuvable"));
+        if (userDtoRq.getDepartementNom() != null && !userDtoRq.getDepartementNom().isEmpty()) {
+            Departement departement = departementRepository.findByNom(userDtoRq.getDepartementNom())
+                    .orElseThrow(() -> new RuntimeException("Département introuvable avec le nom : " + userDtoRq.getDepartementNom()));
             utilisateur.setDepartement(departement);
         } else {
-            utilisateur.setDepartement(null); // ou ignorer cette ligne
+            utilisateur.setDepartement(null);
         }
 
         utilisateurRepository.save(utilisateur);
@@ -75,6 +90,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                 .message("User has been saved successfully")
                 .build();
     }
+
 
     @Override
     public ApiResponse deleteUser(Long id) {

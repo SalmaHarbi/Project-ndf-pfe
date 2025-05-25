@@ -57,20 +57,20 @@ public class JustificatifImpl implements JustificatifInterface {
 
     @Override
     public ApiResponse UploadJustificatif(JustificatifDto justificatifDto) {
-        Justificatif justificatif=justificatifMapper.toEntity(justificatifDto);
+        Justificatif justificatif = justificatifMapper.toEntity(justificatifDto);
 
-        Depense depense=depenseRepository.findById(justificatifDto.getDepenseId())
-                        .orElseThrow(()-> new RuntimeException("Depense introuvable"));
+        Depense depense = depenseRepository.findByNom(justificatifDto.getNom())
+                .orElseThrow(() -> new RuntimeException("Dépense avec ce nom introuvable"));
 
         justificatif.setDepense(depense);
         justificatifRepository.save(justificatif);
 
         return ApiResponse.builder()
                 .id(justificatif.getId())
-                .message("Justiifcatif has been saved successfuly")
+                .message("Justificatif a été enregistré avec succès")
                 .build();
-
     }
+
 
 
     @Override

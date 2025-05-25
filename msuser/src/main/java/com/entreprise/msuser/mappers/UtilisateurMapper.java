@@ -9,7 +9,6 @@ import org.mapstruct.*;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UtilisateurMapper {
 
-    @Mapping(target = "statut",defaultValue = "true")
     Utilisateur toEntity(UserDtoRq userDtoRq);
 
     UserDtoRq toDto(Utilisateur utilisateur);
@@ -18,7 +17,6 @@ public interface UtilisateurMapper {
 
     Utilisateur toEntity(UserDtoRs userDtoRs);
 
-    @Mapping(target = "statut",defaultValue = "true")
     UserDtoRs toDtoRs(Utilisateur utilisateur);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

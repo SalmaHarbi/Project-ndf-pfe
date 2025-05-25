@@ -3,7 +3,6 @@ package com.entreprise.msexpensereport.services.serviceImpl;
 import com.entreprise.msexpensereport.dtos.*;
 import com.entreprise.msexpensereport.entities.Enum.Statut;
 import com.entreprise.msexpensereport.entities.NoteDeFrais;
-import com.entreprise.msexpensereport.feign.UserRestClient;
 import com.entreprise.msexpensereport.mappers.NoteDeFraisMapper;
 import com.entreprise.msexpensereport.repositories.NoteDeFraisRepository;
 import com.entreprise.msexpensereport.services.NoteDeFraisInterface;
@@ -12,41 +11,33 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class  NoteDeFraisImpl implements NoteDeFraisInterface {
 
     private final NoteDeFraisRepository noteDeFraisRepository;
     private final NoteDeFraisMapper noteDeFraisMapper;
-    private final UserRestClient userRestClient;
 
     public NoteDeFraisImpl(NoteDeFraisRepository noteDeFraisRepository,
-                           NoteDeFraisMapper noteDeFraisMapper,
-                           UserRestClient userRestClient){
+                           NoteDeFraisMapper noteDeFraisMapper){
         this.noteDeFraisMapper=noteDeFraisMapper;
         this.noteDeFraisRepository=noteDeFraisRepository;
-        this.userRestClient=userRestClient;
     }
 
     @Override
-    public NdfRs getById(Long id) {
-        NoteDeFrais noteDeFrais= noteDeFraisRepository.findById(id).orElse(null);
-        return noteDeFraisMapper.toDto(noteDeFrais);
-    }
-    @Override
-    public Ndfs getId(Long id) {
+    public Ndfs getById(Long id) {
         NoteDeFrais noteDeFrais= noteDeFraisRepository.findById(id).orElse(null);
         return noteDeFraisMapper.toDtos(noteDeFrais);
     }
 
-    /*@Override
-    public List<NdfRs> getAllNoteDeFrais() {
+
+    @Override
+    public List<Ndfs> getAllNoteDeFrais() {
         List<NoteDeFrais> noteDeFraisList = noteDeFraisRepository.findAllNoteDeFraisByStatut(true);
-        List<NdfRs> ndfRs = new ArrayList<>();
-        noteDeFraisList.forEach(e->ndfRs.add(noteDeFraisMapper.toDto(e)));
+        List<Ndfs> ndfRs = new ArrayList<>();
+        noteDeFraisList.forEach(e->ndfRs.add(noteDeFraisMapper.toDtos(e)));
         return ndfRs;
-    }*/
+    }
 
 
     @Override
@@ -115,10 +106,10 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
         return ndfRs;
     }
     @Override
-    public List<NdfRs> getAllStatutSoumise() {
+    public List<Ndfs> getAllStatutSoumise() {
         List<NoteDeFrais> notes = noteDeFraisRepository.findAllNoteDeFraisByStatutAndStatutDisable(true, Statut.soumis);
-        List<NdfRs> ndfRs = new ArrayList<>();
-        notes.forEach(e->ndfRs.add(noteDeFraisMapper.toDto(e)));
+        List<Ndfs> ndfRs = new ArrayList<>();
+        notes.forEach(e->ndfRs.add(noteDeFraisMapper.toDtos(e)));
         return ndfRs;
     }
     @Override

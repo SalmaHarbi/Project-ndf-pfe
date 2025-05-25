@@ -1,20 +1,27 @@
 package com.entreprise.msexpense.batchConfig;
 
+import com.entreprise.msexpense.entities.BatchResultStorage;
 import com.entreprise.msexpense.entities.Depense;
-import com.entreprise.msexpense.repositories.DepenseRepository;
+import com.entreprise.msexpense.entities.RapportDepense;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+
 
 @Component
 public class DatabaseItemWriter implements ItemWriter<Depense> {
 
-    @Autowired
-    private DepenseRepository depenseRepository;
+    private final BatchResultStorage storage;
+
+    public DatabaseItemWriter(BatchResultStorage storage) {
+        this.storage = storage;
+    }
+
 
     @Override
-    public void write(Chunk<? extends Depense> chunk) throws Exception{
-        depenseRepository.saveAll(chunk.getItems());
+    public void write(Chunk<? extends Depense> items) throws Exception {
+        // Chunk implémente Iterable
+        storage.addAll(items.getItems());
     }
 }

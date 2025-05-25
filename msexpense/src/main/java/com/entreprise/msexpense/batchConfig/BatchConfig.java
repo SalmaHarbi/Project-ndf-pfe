@@ -1,7 +1,9 @@
 package com.entreprise.msexpense.batchConfig;
 
 
+import com.entreprise.msexpense.entities.BatchResultStorage;
 import com.entreprise.msexpense.entities.Depense;
+import com.entreprise.msexpense.entities.RapportDepense;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -42,7 +44,7 @@ public class BatchConfig {
 
     @Bean
     public Job simpleJob(Step step) {
-        return new JobBuilder("RecalculMontant", jobRepository)
+        return new JobBuilder("rapport", jobRepository)
                 .start(step)
                 .build();
     }
@@ -51,21 +53,23 @@ public class BatchConfig {
     public Step step(JpaPagingItemReader<Depense> reader,
                      ItemProcessor<Depense, Depense> processor,
                      ItemWriter<Depense> writer) {
-        return new StepBuilder("RecalculMontant", jobRepository)
+        return new StepBuilder("Rapport", jobRepository)
                 .<Depense, Depense>chunk(5, transactionManager)
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
+                .allowStartIfComplete(true)  // Permet de relancer même si COMPLETED
                 .build();
     }
+
 
 
     @Bean
     public JpaPagingItemReader<Depense> reader(EntityManagerFactory entityManagerFactory) {
         JpaPagingItemReader<Depense> reader = new JpaPagingItemReader<>();
-        reader.setName("RecalculMontant");
+        reader.setName("Rapport");
         reader.setEntityManagerFactory(entityManagerFactory);
-        reader.setQueryString("SELECT d FROM Depense d WHERE d.device = 'MAD'");
+        reader.setQueryString("SELECT d FROM Depense d where statut=true");
         reader.setPageSize(10);
         reader.setSaveState(true);
         return reader;
@@ -73,26 +77,21 @@ public class BatchConfig {
 
 
     @Bean
-    public ItemProcessor<Depense, Depense> processor() {
+    public ItemProcessor<Depense, Depense> highAmountProcessor() {
         return depense -> {
-            if ("MAD".equals(depense.getDevice())
-                    && depense.getTauxchange() != null
-                    && depense.getMontant() != null
-                    && depense.getMontantconverti() == null) {
-
-                BigDecimal montant = depense.getMontant();
-                BigDecimal taux = depense.getTauxchange();
-                BigDecimal montantConverti = montant.multiply(taux);
-
-                depense.setMontantconverti(montantConverti);
+            if (depense.getMontantconverti() != null && depense.getMontantconverti().compareTo(new BigDecimal("3000")) > 0) {
+                return depense;
             }
-            return depense;
+            return null;
         };
     }
 
 
+
+
     @Bean
-    public ItemWriter<Depense> writer() {
-        return new DatabaseItemWriter();
+    public ItemWriter<Depense> writer(BatchResultStorage storage) {
+        return new DatabaseItemWriter(storage);
     }
+
 }

@@ -1,5 +1,6 @@
 package com.entreprise.msexpensereport.entities;
 
+import com.entreprise.msexpensereport.dtos.DepenseDtoRs;
 import com.entreprise.msexpensereport.dtos.UserDtoRs;
 import com.entreprise.msexpensereport.entities.Enum.Statut;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 
 @AllArgsConstructor @NoArgsConstructor
 @Data
@@ -43,5 +45,10 @@ public class NoteDeFrais {
 
     @Transient
     private UserDtoRs userDtoRs;
+
+    private Long depenseId ;
+
+    @Transient
+    private DepenseDtoRs depenses;
 
 }

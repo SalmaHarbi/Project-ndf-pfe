@@ -28,9 +28,19 @@ public class UtilisateurController {
         return utilisateurService.getById(id);
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/getAllEmplDep")
     public List<UserDepDto> getAllUtilisateur() {
         return utilisateurService.getAllUtilisateur();
+    }
+
+    @GetMapping("/getAllEmployee")
+    public List<UserDtoRs> getAllUsers() {
+        return utilisateurService.getEmployee();
+    }
+
+    @GetMapping("/getAllManager")
+    public List<UserDtoRs> getAllManagers() {
+        return utilisateurService.getManagers();
     }
 
     @PostMapping("/add")

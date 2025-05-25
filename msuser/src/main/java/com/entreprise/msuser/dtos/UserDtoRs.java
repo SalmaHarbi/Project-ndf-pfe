@@ -15,13 +15,12 @@ import java.time.LocalDate;
 @Builder
 public class UserDtoRs {
 
-    private Long id;
+     private Long id;
+    @NotEmpty(message = "firstname should not be null")
+    private String firstname;
 
-    @NotEmpty(message = "prenom should not be null")
-    private String prenom;
-
-    @NotEmpty(message = "nom should not be null")
-    private String nom;
+    @NotEmpty(message = "lastname should not be null")
+    private String lastname;
 
     @NotEmpty(message = "email should not be null")
     private String email;
@@ -29,10 +28,12 @@ public class UserDtoRs {
     @NotEmpty(message = "role should not be null")
     private String role;
 
+    @NotEmpty(message = "Name Department should not be null")
+    private String departementNom;
+
     private String photo;
 
-    @NotNull(message = "statut should not be null")
-    private Boolean statut;
+
 
 
 

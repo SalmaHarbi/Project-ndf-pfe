@@ -1,4 +1,4 @@
-package com.entreprise.msexpense.dtos;
+package com.entreprise.msexpensereport.dtos;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

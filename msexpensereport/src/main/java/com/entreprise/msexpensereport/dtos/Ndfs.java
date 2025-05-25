@@ -1,12 +1,15 @@
 package com.entreprise.msexpensereport.dtos;
 
 import com.entreprise.msexpensereport.entities.Enum.Statut;
+import jakarta.persistence.ElementCollection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -22,4 +25,9 @@ public class Ndfs {
     private String raisondurejet;
     private Float montanttotal;
     private Boolean statutDisable=true;
+    private Long UserId;
+    private Long depenseId;
+
+    private UserDtoRs user;
+    private DepenseDtoRs depenses;
 }

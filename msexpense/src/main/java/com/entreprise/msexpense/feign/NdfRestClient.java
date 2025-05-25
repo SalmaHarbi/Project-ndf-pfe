@@ -12,8 +12,10 @@ import java.util.List;
 public interface NdfRestClient {
 
     @GetMapping("/ndf/getId/{id}")
-    Ndfs getId(@PathVariable Long id);
+    Ndfs getId(@PathVariable("id") Long id);
 
     @GetMapping("/ndf/getAl")
     List<Ndfs> getAll();
+
+
 }

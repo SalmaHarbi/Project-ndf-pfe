@@ -8,7 +8,6 @@ import org.mapstruct.*;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface DepenseMapper {
 
-    @Mapping(target = "statut",defaultValue = "true")
     Depense toEntity(DepenseDtoRq depenseDto);
 
     DepenseDtoRs toDto(Depense depense);

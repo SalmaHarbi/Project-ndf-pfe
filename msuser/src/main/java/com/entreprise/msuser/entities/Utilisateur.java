@@ -24,12 +24,9 @@ public class Utilisateur {
     private String password;
     private String role;
     private String photo;
-    private Boolean statut;
-    private String DepartementNom;
-    @ElementCollection
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "roles")
-    private List<String> roles;
+    private Boolean statut=true;
+    private String departementNom;
+
 
     @ManyToOne
     private Departement departement;

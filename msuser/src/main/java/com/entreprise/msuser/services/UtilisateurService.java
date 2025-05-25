@@ -15,6 +15,8 @@ public interface UtilisateurService {
 
     UserDtoRs getById(Long id);
     List<UserDepDto> getAllUtilisateur();
+    List<UserDtoRs> getEmployee();
+    List<UserDtoRs> getManagers();
     ApiResponse addUser(UserDtoRq userDtoRq);
     ApiResponse deleteUser(Long id);
     ApiResponse updateUser(Long id,UserDtoRq userDtoRq);
