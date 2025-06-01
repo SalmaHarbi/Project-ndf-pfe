@@ -35,6 +35,15 @@ public class RapportController {
         return rapportDepenseImpl.addRapport(rapportDepenseDto);
     }
 
+    @PutMapping("/update/{id}")
+    public ApiResponse updateRapport(@PathVariable("id") Long id, @RequestBody RapportDepenseDto rapportDepenseDto) {
+        return rapportDepenseImpl.updateRapport(id,rapportDepenseDto);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ApiResponse deleteRapport(@PathVariable("id") Long id) {
+        return rapportDepenseImpl.deleteRapport(id);
+    }
 }
 
 

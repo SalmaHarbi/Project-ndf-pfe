@@ -12,11 +12,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Data
 public class RapportDepenseDto {
-    private Long id;
 
     private LocalDate dateGeneration;
 
     private String cheminRapport;
+    private String raison;
+
 
     private Depense depense;
 }

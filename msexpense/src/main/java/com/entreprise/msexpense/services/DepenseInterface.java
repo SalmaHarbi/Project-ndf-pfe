@@ -16,7 +16,7 @@ public interface DepenseInterface {
     ApiResponse addDepense(DepenseDtoRq depenseDto);
     ApiResponse deleteDepense(Long id);
     ApiResponse updateDepense(Long id, DepenseDtoRq depenseDto);
-    public BigDecimal getMontantTotalDesDepensesActives();
-    public List<Map<String, Object>> getMontantParCategorie();
-    public List<Map<String, Object>> getDepenseParMois();
+    BigDecimal getMontantTotalDesDepensesActives();
+    List<Map<String, Object>> getMontantParCategorie();
+    List<Map<String, Object>> getDepenseParMois();
 }

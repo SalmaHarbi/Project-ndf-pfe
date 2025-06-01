@@ -20,9 +20,8 @@ public class DepenseDtoRs {
 
     @NotNull
     private LocalDateTime datedepense;
-
+    @NotEmpty
     private String nom;
-
     @NotNull
     private Categorie categorie;
     @NotEmpty

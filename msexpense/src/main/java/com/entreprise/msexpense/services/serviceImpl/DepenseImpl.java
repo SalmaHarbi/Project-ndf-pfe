@@ -3,12 +3,8 @@ package com.entreprise.msexpense.services.serviceImpl;
 import com.entreprise.msexpense.dtos.ApiResponse;
 import com.entreprise.msexpense.dtos.DepenseDtoRq;
 import com.entreprise.msexpense.dtos.DepenseDtoRs;
-import com.entreprise.msexpense.dtos.Ndfs;
 import com.entreprise.msexpense.entities.Depense;
-import com.entreprise.msexpense.entities.Justificatif;
-import com.entreprise.msexpense.feign.NdfRestClient;
 import com.entreprise.msexpense.mappers.DepenseMapper;
-import com.entreprise.msexpense.mappers.JustificatifMapper;
 import com.entreprise.msexpense.repositories.DepenseRepository;
 import com.entreprise.msexpense.services.DepenseInterface;
 import org.springframework.stereotype.Service;
@@ -18,27 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class DepenseImpl implements DepenseInterface {
 
     private final DepenseRepository depenseRepository;
     private final DepenseMapper depenseMapper;
-    private  final JustificatifMapper justificatifMapper;
-    private final NdfRestClient ndfRestClient;
 
     public DepenseImpl(DepenseRepository depenseRepository,
-                       DepenseMapper depenseMapper,
-                       JustificatifMapper justificatifMapper,
-                       NdfRestClient ndfRestClient){
+                       DepenseMapper depenseMapper){
         this.depenseRepository=depenseRepository;
         this.depenseMapper=depenseMapper;
-        this.justificatifMapper=justificatifMapper;
-        this.ndfRestClient=ndfRestClient;
     }
-
-
 
     @Override
     public DepenseDtoRs getById(Long id) {
@@ -107,7 +94,7 @@ public class DepenseImpl implements DepenseInterface {
     }
     @Override
     public List<Map<String, Object>> getDepenseParMois() {
-        List<Object[]> resultats = depenseRepository.getDepensesGroupByMonth(); // ou getDepensesGroupByYearAndMonth
+        List<Object[]> resultats = depenseRepository.getDepensesGroupByMonth();
         List<Map<String, Object>> reponse = new ArrayList<>();
 
         for (Object[] row : resultats) {
@@ -117,7 +104,7 @@ public class DepenseImpl implements DepenseInterface {
             int mois;
 
             if (moisRaw instanceof Number) {
-                mois = ((Number) moisRaw).intValue(); // Gère Integer, Double, BigDecimal, etc.
+                mois = ((Number) moisRaw).intValue();
             } else {
                 throw new IllegalArgumentException("Type de mois inattendu : " + moisRaw.getClass());
             }
@@ -131,7 +118,4 @@ public class DepenseImpl implements DepenseInterface {
 
         return reponse;
     }
-
-
-
 }

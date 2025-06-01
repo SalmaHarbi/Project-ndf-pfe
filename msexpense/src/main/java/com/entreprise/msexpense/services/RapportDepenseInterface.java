@@ -1,6 +1,7 @@
 package com.entreprise.msexpense.services;
 
 import com.entreprise.msexpense.dtos.ApiResponse;
+import com.entreprise.msexpense.dtos.DepenseDtoRq;
 import com.entreprise.msexpense.dtos.RapportDepenseDto;
 import org.springframework.stereotype.Service;
 
@@ -11,4 +12,7 @@ public interface RapportDepenseInterface {
     RapportDepenseDto getById(Long id);
     List<RapportDepenseDto> getAllRapport();
     ApiResponse addRapport(RapportDepenseDto depenseDto);
+    ApiResponse updateRapport(Long id, RapportDepenseDto rapportDepenseDto);
+    ApiResponse deleteRapport(Long id);
+
 }

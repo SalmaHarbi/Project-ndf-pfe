@@ -5,12 +5,10 @@ import com.auth0.jwt.JWT;
 import com.entreprise.msuser.configuration.KeycloakConfig;
 import com.entreprise.msuser.dtos.*;
 import com.entreprise.msuser.feign.KeycloakClient;
-import com.entreprise.msuser.mappers.KeycloakUserMapper;
 import org.keycloak.representations.idm.RoleRepresentation;
 import com.entreprise.msuser.services.AuthInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -36,19 +34,16 @@ public class AuthServiceImpl implements AuthInterface {
     private final KeycloakConfig keycloakConfig;
     private Keycloak keycloak;
     private final RestTemplate restTemplate;
-    private final KeycloakUserMapper keycloakUserMapper ;
 
 
     public AuthServiceImpl(KeycloakClient keycloakClient,
                            KeycloakConfig keycloakConfig,
                            Keycloak keycloak,
-                           RestTemplate restTemplate,
-                           KeycloakUserMapper keycloakUserMapper) {
+                           RestTemplate restTemplate) {
         this.keycloakClient = keycloakClient;
         this.keycloakConfig = keycloakConfig;
         this.keycloak = keycloak;
         this.restTemplate = restTemplate;
-        this.keycloakUserMapper=keycloakUserMapper;
     }
 
     @Value("${authorization.realm}")
@@ -124,21 +119,17 @@ public class AuthServiceImpl implements AuthInterface {
     }
 
     @Override
-    public ResponseEntity<String> resetPassword(ResetPassword request,
-                                                Principal principal) {
+    public ResponseEntity<String> resetPassword(ResetPassword request, Principal principal) {
 
         if (principal == null) {
-            throw new IllegalStateException("User is not authenticated");
-        }
+            throw new IllegalStateException("User is not authenticated");}
         String username = principal.getName();
-
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add(GRANT_TYPE, PASSWORD);
         body.add(CLIENT_ID, clientId);
-
         body.add(USERNAME, username);
         body.add(PASSWORD, request.getOldPassword());
 
@@ -254,60 +245,6 @@ public class AuthServiceImpl implements AuthInterface {
             return Collections.emptyList();
         }
     }
-
-
-
-
-
-
-    @Override
-    public ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers() {
-        List<UserRepresentation> users = keycloakConfig.keycloak()
-                .realms()
-                .realm(realm)
-                .users()
-                .list();
-
-        List<UserDtoRsKey> userDtoskey = users.stream()
-                .map(user -> {
-                    // Retrieve roles of the user
-                    List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
-                            .realms()
-                            .realm(realm)
-                            .users()
-                            .get(user.getId())
-                            .roles()
-                            .realmLevel()
-                            .listEffective();
-
-                    List<String> roleNames = realmRoles.stream()
-                            .map(RoleRepresentation::getName)
-                            .toList();
-
-                    // Safe access to department attribute
-                    String department = "";
-                    if (user.getAttributes() != null && user.getAttributes().containsKey("department")) {
-                        department = user.getAttributes().get("department").get(0);
-                    }
-
-                    return UserDtoRsKey.builder()
-                            .username(user.getUsername())
-                            .firstName(user.getFirstName())
-                            .lastName(user.getLastName())
-                            .email(user.getEmail())
-                            .department(department)
-                            .roles(roleNames)
-                            .build();
-                })
-                .toList();
-
-        return ResponseEntity.ok(userDtoskey);
-    }
-
-
-
-
-
 }
 
 

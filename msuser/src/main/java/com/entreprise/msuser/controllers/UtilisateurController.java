@@ -62,5 +62,4 @@ public class UtilisateurController {
     public Authentication authentication(Authentication authentication){
         return authentication;
     }
-
 }

@@ -28,24 +28,12 @@ public class DepenseController {
     @GetMapping("/get/{id}")
     public DepenseDtoRs getDepenseById(@PathVariable("id") Long id) {
         DepenseDtoRs depenseDtoRs = depenseImpl.getById(id);
-
-       /* if (depenseDtoRs.getNdfId() != null) {
-            Ndfs ndfs = ndfRestClient.getId(depenseDtoRs.getNdfId());
-            depenseDtoRs.setNdfs(ndfs);
-        }*/
         return depenseDtoRs;
     }
 
     @GetMapping("/getAll")
     public List<DepenseDtoRs> getAllDepenses() {
-
         List<DepenseDtoRs> depenseDtoRs=depenseImpl.getAllDepense();
-      /*  for (DepenseDtoRs depense : depenseDtoRs){
-            if(depense.getNdfId() != null){
-                Ndfs ndfRs = ndfRestClient.getId(depense.getNdfId());
-                depense.setNdfs(ndfRs);
-            }
-        }*/
         return depenseDtoRs;
     }
 

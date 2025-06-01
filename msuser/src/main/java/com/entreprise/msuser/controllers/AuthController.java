@@ -66,18 +66,4 @@ public class AuthController {
     }
 
 
-
-
-
-
-    @GetMapping("/all-users")
-    public ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers() {
-        return authService.getKeycloakUsers();
-    }
-
-
-
-
-
-
 }

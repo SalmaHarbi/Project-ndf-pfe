@@ -8,10 +8,6 @@ public class Constants {
     public static final String CLIENT_SECRET = "client_secret";
     public static final String CLIENT_CREDENTIALS = "client_credentials";
     public static final String USERNAME = "username";
-    public static final String FIRSTNAME = "firstName";
-    public static final String LASTNAME = "lastName";
-    public static final String EMAIL = "email";
-    public static final String ENABLED = "enabled";
     public static final String PASSWORD = "password";
     public static final String GRANT_TYPE = "grant_type";
     public static final String AUTHORIZATION = "Authorization";
@@ -19,8 +15,6 @@ public class Constants {
     public static final String REALMS = "/realms/";
     public static final String ADMIN = "/admin";
     public static final String PROTOCOL_OPEN_ID_CONNECT_TOKEN = "/protocol/openid-connect/token";
-    public static final String DEPARTMENT = "department";
-    public static final String DEFAULT_ROLES = "default-roles-welcome-manager";
 
 
 }

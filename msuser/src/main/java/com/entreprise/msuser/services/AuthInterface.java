@@ -17,6 +17,5 @@ public interface AuthInterface {
     Map<String, Object> refreshAccessToken(refreshTokenDto refreshToken);
     ResponseEntity<String> resetPassword(ResetPassword request,Principal principal);
     ResponseEntity<String> forgotPassword( String email);
-    ResponseEntity<List<UserDtoRsKey>> getKeycloakUsers();
 
 }

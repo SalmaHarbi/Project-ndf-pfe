@@ -44,6 +44,5 @@ public class DepenseDtoRs {
     private Collection<Justificatif> justificatifs;
 
    private Long ndfId;
-   // private Ndfs ndfs;
 
 }

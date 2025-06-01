@@ -3,7 +3,6 @@ package com.entreprise.msexpense.batchConfig;
 
 import com.entreprise.msexpense.entities.BatchResultStorage;
 import com.entreprise.msexpense.entities.Depense;
-import com.entreprise.msexpense.entities.RapportDepense;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -58,11 +57,9 @@ public class BatchConfig {
                 .reader(reader)
                 .processor(processor)
                 .writer(writer)
-                .allowStartIfComplete(true)  // Permet de relancer même si COMPLETED
+                .allowStartIfComplete(true)
                 .build();
     }
-
-
 
     @Bean
     public JpaPagingItemReader<Depense> reader(EntityManagerFactory entityManagerFactory) {
@@ -85,9 +82,6 @@ public class BatchConfig {
             return null;
         };
     }
-
-
-
 
     @Bean
     public ItemWriter<Depense> writer(BatchResultStorage storage) {

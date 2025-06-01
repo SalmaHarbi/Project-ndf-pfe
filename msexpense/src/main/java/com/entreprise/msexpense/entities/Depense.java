@@ -47,6 +47,7 @@ public class Depense {
     private Long ndfId;
 
     @OneToOne(mappedBy = "depense")
+    @JsonIgnore
     private RapportDepense rapport;
 
 }
