@@ -18,6 +18,7 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
     private final NoteDeFraisRepository noteDeFraisRepository;
     private final NoteDeFraisMapper noteDeFraisMapper;
 
+
     public NoteDeFraisImpl(NoteDeFraisRepository noteDeFraisRepository,
                            NoteDeFraisMapper noteDeFraisMapper){
         this.noteDeFraisMapper=noteDeFraisMapper;
@@ -139,22 +140,30 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
                 .build();
     }
 
+
+
     @Override
     public ApiResponse changeStatutToApprouver(Long id) {
         NoteDeFrais noteDeFrais = noteDeFraisRepository.findById(id).orElse(null);
 
-        if (noteDeFrais == null) { return ApiResponse.builder()
-                .message("Note de frais introuvable")
-                .build(); }
+        if (noteDeFrais == null) {
+            return ApiResponse.builder()
+                    .message("Note de frais introuvable")
+                    .build();
+        }
 
-        if (noteDeFrais.getStatut() != Statut.soumis) { return ApiResponse.builder()
+        if (noteDeFrais.getStatut() != Statut.soumis) {
+            return ApiResponse.builder()
                     .id(noteDeFrais.getId())
                     .message("Impossible de soumettre : la note n'est pas en Approuver.")
-                    .build(); }
+                    .build();
+        }
 
         noteDeFrais.setStatut(Statut.approuvé);
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
+
+
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())

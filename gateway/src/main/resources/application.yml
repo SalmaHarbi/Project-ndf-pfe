@@ -16,3 +16,4 @@ spring:
               - DELETE
               - OPTIONS
             allow-credentials: true
+

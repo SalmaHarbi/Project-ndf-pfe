@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(sm->sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(h -> h.frameOptions(fo -> fo.disable()))
                 .csrf(csrf->csrf.disable())
-               .authorizeHttpRequests((ar->ar.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/ndf/**","/user/**","/depense/**").permitAll()))
+               .authorizeHttpRequests((ar->ar.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html","/ndf/**","/user/**","/depense/**","/ws-notifications/**").permitAll()))
                 .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
                 .oauth2ResourceServer(o2->o2.jwt(jwt->jwt.jwtAuthenticationConverter(jwtAuthConverter)))
                 .build();
