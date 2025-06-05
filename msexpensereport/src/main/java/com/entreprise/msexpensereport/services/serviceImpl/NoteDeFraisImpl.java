@@ -4,6 +4,7 @@ import com.entreprise.msexpensereport.dtos.*;
 import com.entreprise.msexpensereport.entities.Enum.Statut;
 import com.entreprise.msexpensereport.entities.NoteDeFrais;
 import com.entreprise.msexpensereport.mappers.NoteDeFraisMapper;
+import com.entreprise.msexpensereport.notif.NotificationProducer;
 import com.entreprise.msexpensereport.repositories.NoteDeFraisRepository;
 import com.entreprise.msexpensereport.services.NoteDeFraisInterface;
 import org.springframework.stereotype.Service;
@@ -17,12 +18,14 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
 
     private final NoteDeFraisRepository noteDeFraisRepository;
     private final NoteDeFraisMapper noteDeFraisMapper;
-
+private final NotificationProducer notificationProducer;
 
     public NoteDeFraisImpl(NoteDeFraisRepository noteDeFraisRepository,
-                           NoteDeFraisMapper noteDeFraisMapper){
+                           NoteDeFraisMapper noteDeFraisMapper,
+                           NotificationProducer notificationProducer){
         this.noteDeFraisMapper=noteDeFraisMapper;
         this.noteDeFraisRepository=noteDeFraisRepository;
+        this.notificationProducer=notificationProducer;
     }
 
     @Override
@@ -142,6 +145,8 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
 
 
 
+
+
     @Override
     public ApiResponse changeStatutToApprouver(Long id) {
         NoteDeFrais noteDeFrais = noteDeFraisRepository.findById(id).orElse(null);
@@ -163,7 +168,9 @@ public class  NoteDeFraisImpl implements NoteDeFraisInterface {
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
 
-
+        // ENVOI DU MESSAGE KAFKA
+        String message = "Note de frais approuvée: id=" + noteDeFrais.getId();
+        notificationProducer.sendNotification(message);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
