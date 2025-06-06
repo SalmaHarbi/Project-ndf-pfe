@@ -17,7 +17,17 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @GetMapping
-    public List<NotificationDto> getAllNotifications() {
+    public List<NotificationDto> getAll() {
         return notificationService.getAllNotifications();
+    }
+
+    @GetMapping("/approuvees")
+    public List<NotificationDto> getApproved() {
+        return notificationService.getApprovedNotifications();
+    }
+
+    @GetMapping("/remboursees")
+    public List<NotificationDto> getRefunded() {
+        return notificationService.getRefundedNotifications();
     }
 }

@@ -1,9 +1,7 @@
 package com.entreprise.msnotif.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.entreprise.msnotif.entities.Enum.NotificationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +20,7 @@ public class Notification {
     private String message;
 
     private LocalDateTime dateCreation;
-
+    @Enumerated(EnumType.STRING)
+    private NotificationType type;
 
 }

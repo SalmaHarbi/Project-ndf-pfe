@@ -1,6 +1,7 @@
 package com.entreprise.msexpensereport.services.serviceImpl;
 
 import com.entreprise.msexpensereport.dtos.*;
+import com.entreprise.msexpensereport.entities.Enum.NotificationType;
 import com.entreprise.msexpensereport.entities.Enum.Statut;
 import com.entreprise.msexpensereport.entities.NoteDeFrais;
 import com.entreprise.msexpensereport.mappers.NoteDeFraisMapper;
@@ -169,15 +170,13 @@ private final NotificationProducer notificationProducer;
         noteDeFraisRepository.save(noteDeFrais);
 
         // ENVOI DU MESSAGE KAFKA
-        String message = "Note de frais approuvée: id=" + noteDeFrais.getId();
-        notificationProducer.sendNotification(message);
+        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.APPROUVEE);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
                 .message("Le statut de la note a été changé en 'approuvé'")
                 .build();
     }
-
     @Override
     public ApiResponse changeStatutToReject(Long id) {
         NoteDeFrais noteDeFrais = noteDeFraisRepository.findById(id).orElse(null);
@@ -194,6 +193,9 @@ private final NotificationProducer notificationProducer;
         noteDeFrais.setStatut(Statut.rejeté);
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
+
+        // ENVOI DU MESSAGE KAFKA
+        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.REJETEE);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
@@ -218,6 +220,9 @@ private final NotificationProducer notificationProducer;
         noteDeFrais.setStatut(Statut.remboursé);
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
+
+        // ENVOI DU MESSAGE KAFKA
+        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.REMBOURSEE);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
