@@ -169,8 +169,12 @@ private final NotificationProducer notificationProducer;
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
 
-        // ENVOI DU MESSAGE KAFKA
-        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.APPROUVEE);
+        NotificationKafkaDTO dto = new NotificationKafkaDTO();
+        dto.setNoteId(noteDeFrais.getId());
+        dto.setType(NotificationType.APPROUVEE.name());
+        dto.setUserId(noteDeFrais.getUserId());
+
+        notificationProducer.sendNotification(dto);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
@@ -194,8 +198,12 @@ private final NotificationProducer notificationProducer;
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
 
-        // ENVOI DU MESSAGE KAFKA
-        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.REJETEE);
+        NotificationKafkaDTO dto = new NotificationKafkaDTO();
+        dto.setNoteId(noteDeFrais.getId());
+        dto.setType(NotificationType.REJETEE.name());
+        dto.setUserId(noteDeFrais.getUserId());
+
+        notificationProducer.sendNotification(dto);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())
@@ -221,8 +229,12 @@ private final NotificationProducer notificationProducer;
         noteDeFrais.setDatesoumission(LocalDateTime.now());
         noteDeFraisRepository.save(noteDeFrais);
 
-        // ENVOI DU MESSAGE KAFKA
-        notificationProducer.sendNotification(noteDeFrais.getId(), NotificationType.REMBOURSEE);
+        NotificationKafkaDTO dto = new NotificationKafkaDTO();
+        dto.setNoteId(noteDeFrais.getId());
+        dto.setType(NotificationType.REMBOURSEE.name());
+        dto.setUserId(noteDeFrais.getUserId());
+
+        notificationProducer.sendNotification(dto);
 
         return ApiResponse.builder()
                 .id(noteDeFrais.getId())

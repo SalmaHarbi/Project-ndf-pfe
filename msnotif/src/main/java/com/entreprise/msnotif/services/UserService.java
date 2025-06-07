@@ -1,0 +1,17 @@
+package com.entreprise.msnotif.services;
+
+import com.entreprise.msnotif.dtos.UserDtoRs;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+@Service
+public class UserService {
+    @Autowired
+    private RestTemplate restTemplate;
+
+    public UserDtoRs getUserById(Long userId) {
+        String url = "http://localhost:8888/MSUSER/user/getEmployeeById/" + userId;
+        return restTemplate.getForObject(url, UserDtoRs.class);
+    }
+}
