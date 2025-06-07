@@ -11,7 +11,7 @@ public class UserService {
     private RestTemplate restTemplate;
 
     public UserDtoRs getUserById(Long userId) {
-        String url = "http://localhost:8888/MSUSER/user/getEmployeeById/" + userId;
+        String url = "http://localhost:8888/MSUSER/user/get/" + userId;
         return restTemplate.getForObject(url, UserDtoRs.class);
     }
 }
