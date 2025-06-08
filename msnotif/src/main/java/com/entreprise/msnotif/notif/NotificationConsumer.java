@@ -1,15 +1,18 @@
 package com.entreprise.msnotif.notif;
 
-import com.entreprise.msnotif.dtos.NotificationDto;
+import com.entreprise.msnotif.dtos.NotificationEmailModel;
 import com.entreprise.msnotif.dtos.NotificationKafkaDTO;
 import com.entreprise.msnotif.dtos.UserDtoRs;
+import com.entreprise.msnotif.mappers.NotificationMapper;
 import com.entreprise.msnotif.services.EmailService;
-import com.entreprise.msnotif.services.NotificationService;
 import com.entreprise.msnotif.services.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+
+
 
 @Service
 public class NotificationConsumer {
@@ -19,6 +22,8 @@ public class NotificationConsumer {
     private UserService userService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     @KafkaListener(topics = "note-approbation", groupId = "msnotification-group")
     public void listen(String message) {
@@ -27,10 +32,13 @@ public class NotificationConsumer {
             UserDtoRs user = userService.getUserById(dto.getUserId());
             if (user != null && user.getEmail() != null) {
                 String subject = "Notification : " + dto.getType();
-                String text = "Bonjour " + user.getPrenom() + ", votre note de frais #" + dto.getNoteId()
-                        + " a été " + dto.getType().toLowerCase() + ".";
-                emailService.sendSimpleEmail(user.getEmail(), subject, text);
+
+                NotificationEmailModel model = notificationMapper.toEmailModel(user, dto);
+
+                emailService.sendTemplateEmail(user.getEmail(), subject, model);
             }
+        } catch (MessagingException me) {
+            me.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

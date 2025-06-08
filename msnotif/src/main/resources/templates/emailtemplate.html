@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Notification</title>
+</head>
+<body>
+<h2>Bonjour, <span th:text="${firstname}"></span> <span th:text="${lastname}"></span> !</h2>
+<p>
+    Votre note de frais n° <b th:text="${noteId}"></b> a été
+    <b th:text="${type}"></b>.
+</p>
+<p th:text="${message}"></p>
+<p>Département : <span th:text="${departementNom}"></span></p>
+</body>
+</html>

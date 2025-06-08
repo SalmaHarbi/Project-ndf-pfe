@@ -13,11 +13,12 @@ import lombok.NoArgsConstructor;
 public class UserDtoRs {
 
 
-    @NotEmpty(message = "prenom should not be null")
-    private String prenom;
+    private Long id;
+    @NotEmpty(message = "firstname should not be null")
+    private String firstname;
 
-    @NotEmpty(message = "nom should not be null")
-    private String nom;
+    @NotEmpty(message = "lastname should not be null")
+    private String lastname;
 
     @NotEmpty(message = "email should not be null")
     private String email;
@@ -25,10 +26,10 @@ public class UserDtoRs {
     @NotEmpty(message = "role should not be null")
     private String role;
 
-    private String photo;
+    @NotEmpty(message = "Name Department should not be null")
+    private String departementNom;
 
-    @NotNull(message = "statut should not be null")
-    private Boolean statut=true;
+    private String photo;
 
 
 
