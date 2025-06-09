@@ -1,10 +1,11 @@
 package com.entreprise.msuser.controllers;
 
-import com.entreprise.msuser.dtos.ApiResponse;
-import com.entreprise.msuser.dtos.UserDepDto;
-import com.entreprise.msuser.dtos.UserDtoRq;
-import com.entreprise.msuser.dtos.UserDtoRs;
+import com.entreprise.msuser.dtos.*;
+import com.entreprise.msuser.entities.Utilisateur;
 import com.entreprise.msuser.services.UtilisateurService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
+@Slf4j
 public class UtilisateurController {
 
     private final UtilisateurService utilisateurService;
@@ -33,15 +35,17 @@ public class UtilisateurController {
         return utilisateurService.getAllUtilisateur();
     }
 
-    @GetMapping("/getAllEmployee")
-    public List<UserDtoRs> getAllUsers() {
-        return utilisateurService.getEmployee();
-    }
+    /**
+     *
+     *   @GetMapping("/getAllEmployee")
+     *     public List<UserDtoRs> getAllUsers() {
+     *         return utilisateurService.getEmployee();
+     *     }
+     *
+     */
 
-    @GetMapping("/getAllManager")
-    public List<UserDtoRs> getAllManagers() {
-        return utilisateurService.getManagers();
-    }
+
+
 
     @PostMapping("/add")
     public ApiResponse createUser(@RequestBody UserDtoRq userDtoRq) {
@@ -62,4 +66,24 @@ public class UtilisateurController {
     public Authentication authentication(Authentication authentication){
         return authentication;
     }
+
+
+    @GetMapping("/all")
+    public ResponseEntity<List<KeycloakUsersList>> getAllUsers(){
+        return utilisateurService.getAllUsers();
+    }
+
+
+    @PostMapping("/signup")
+    public ResponseEntity<List<Utilisateur>> signUp(@RequestBody UserRegistrationDTO signUpRequest) {
+        try {
+            List<Utilisateur> createdUsers = utilisateurService.signUp(signUpRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdUsers);
+        } catch (Exception e) {
+            log.error("Error creating user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+
 }

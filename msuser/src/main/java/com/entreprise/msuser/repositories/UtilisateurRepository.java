@@ -11,8 +11,8 @@ import java.util.List;
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur,Long> {
 
-    @Query("SELECT c FROM Utilisateur c WHERE c.statut = :statut AND c.role = :role")
-    List<Utilisateur> findAllByStatutAndRole(@Param("statut") Boolean statut, @Param("role") String role);
+    Utilisateur findUtilisateurByUsername(String username);
+  
 
     @Query("SELECT c FROM Utilisateur c WHERE c.statut=:statut")
     List<Utilisateur> findAllUtilisateurByStatut(@Param("statut") Boolean statut);

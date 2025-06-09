@@ -22,7 +22,13 @@ public class Utilisateur {
     private String firstname;
     private String email;
     private String password;
-    private String role;
+    private String username;
+
+    @ElementCollection
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "roles")
+    private List<String> roles;
+
     private String photo;
     private Boolean statut=true;
     private String departementNom;

@@ -15,6 +15,17 @@ public class Constants {
     public static final String REALMS = "/realms/";
     public static final String ADMIN = "/admin";
     public static final String PROTOCOL_OPEN_ID_CONNECT_TOKEN = "/protocol/openid-connect/token";
+    public static final String FIRSTNAME = "firstName";
+    public static final String LASTNAME = "lastName";
+    public static final String EMAIL = "email";
+    public static final String SERVER_URL = "serverUrl";
+    public static final String ENABLED = "enabled";
+
+    public static final String REALM = "realm";
+
+    public static final String DEPARTMENT = "departementNom";
+
+
 
 
 }

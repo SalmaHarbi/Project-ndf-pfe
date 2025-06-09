@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,7 +27,7 @@ public class UserDtoRs {
     private String email;
 
     @NotEmpty(message = "role should not be null")
-    private String role;
+    private List<String> roles;
 
     @NotEmpty(message = "Name Department should not be null")
     private String departementNom;

@@ -25,7 +25,7 @@ public interface UtilisateurMapper {
     @Mapping(target ="firstname")
     @Mapping(target = "lastname")
     @Mapping(target = "email")
-    @Mapping(target = "role")
+    @Mapping(target = "roles")
     UserDepDto toUtilisateurLightDto(Utilisateur utilisateur);
 
 }
