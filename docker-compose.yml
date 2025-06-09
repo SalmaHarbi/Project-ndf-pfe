@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: Salma123@
-      POSTGRES_DB: usedb
+      POSTGRES_DB: projetdb
     ports:
       - "5432:5432"
     volumes:
@@ -42,7 +42,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_DB: postgres
-      KC_DB_URL_HOST: postgres
+      KC_DB_URL_HOST: projetdb-central
       KC_DB_URL_DATABASE: projetdb
       KC_DB_USERNAME: dev
       KC_DB_PASSWORD: Salma123@
@@ -83,5 +83,22 @@ services:
     depends_on:
       - eurekaserver
 
+
+  msuser:
+    image: msuser:latest
+    container_name: msuser
+    depends_on:
+      - postgres
+      - keycloak
+      - eurekaserver
+      - configserver
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://projetdb-central:5432/projetdb
+      SPRING_DATASOURCE_USERNAME: dev
+      SPRING_DATASOURCE_PASSWORD: Salma123@
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      SPRING_CLOUD_CONFIG_URI: http://configserver:9999
 volumes:
   postgres_data:
