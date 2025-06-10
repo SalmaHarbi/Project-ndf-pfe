@@ -144,5 +144,51 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
       SPRING_CLOUD_CONFIG_URI: http://configserver:9999
       KEYCLOAK_AUTH_SERVER_URL: http://keycloakk:8088
+
+
+
+  notif:
+    image: msnotif:latest
+    container_name: notif
+    depends_on:
+      - postgres
+      - keycloak
+      - eurekaserver
+      - zookeeper
+      - kafka
+      - configserver
+      - msuser
+      - expensereport
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://projetdb-central:5432/notifdb
+      SPRING_DATASOURCE_USERNAME: dev
+      SPRING_DATASOURCE_PASSWORD: Salma123@
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      SPRING_CLOUD_CONFIG_URI: http://configserver:9999
+      KEYCLOAK_AUTH_SERVER_URL: http://keycloakk:8088
+      KAFKA_BOOTSTRAP_SERVERS: kafkaa:9092
+
+
+  gateway:
+    image: gateway:latest
+    container_name: gateway
+    depends_on:
+      - eurekaserver
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_APPLICATION_NAME: Gateway
+      SERVER_PORT: 8888
+      SPRING_CLOUD_CONFIG_ENABLED: "false"
+      SPRING_MAIN_WEB-APPLICATION-TYPE: reactive
+      MANAGEMENT_ENDPOINTS_ENABLED-BY-DEFAULT: "true"
+      MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "*"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      SPRING_CLOUD_GATEWAY_DISCOVERY_LOCATOR_ENABLED: "true"
+      SPRING_CLOUD_DISCOVERY_ENABLED: "true"
+      EUREKA_HOST_NAME: eurekaserver
+
 volumes:
   postgres_data:
