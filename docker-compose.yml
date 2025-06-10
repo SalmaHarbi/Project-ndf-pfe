@@ -100,5 +100,28 @@ services:
       SPRING_DATASOURCE_PASSWORD: Salma123@
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
       SPRING_CLOUD_CONFIG_URI: http://configserver:9999
+
+
+  expensereport:
+    image: msexpensereport:latest
+    container_name: expensereport
+    depends_on:
+      - postgres
+      - keycloak
+      - zookeeper
+      - kafka
+      - eurekaserver
+      - configserver
+      - msuser
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://projetdb-central:5432/expensereportdb
+      SPRING_DATASOURCE_USERNAME: dev
+      SPRING_DATASOURCE_PASSWORD: Salma123@
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      SPRING_CLOUD_CONFIG_URI: http://configserver:9999
+      KEYCLOAK_AUTH_SERVER_URL: http://keycloakk:8088
+      KAFKA_BOOTSTRAP_SERVERS: kafkaa:9092
 volumes:
   postgres_data:
