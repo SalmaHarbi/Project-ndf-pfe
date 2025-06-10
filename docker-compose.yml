@@ -95,7 +95,7 @@ services:
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://projetdb-central:5432/projetdb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://projetdb-central:5432/usedb
       SPRING_DATASOURCE_USERNAME: dev
       SPRING_DATASOURCE_PASSWORD: Salma123@
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
