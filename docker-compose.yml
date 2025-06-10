@@ -100,6 +100,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: Salma123@
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
       SPRING_CLOUD_CONFIG_URI: http://configserver:9999
+      KEYCLOAK_AUTH_SERVER_URL: http://keycloakk:8088
+
 
 
   expensereport:
