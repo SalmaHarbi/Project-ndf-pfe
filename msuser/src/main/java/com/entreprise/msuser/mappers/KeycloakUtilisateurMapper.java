@@ -9,6 +9,9 @@ public interface KeycloakUtilisateurMapper {
 
     @Mapping(source = "firstName", target = "firstname")
     @Mapping(source = "lastName", target = "lastname")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "departementNom", target = "departementNom")
+    @Mapping(source = "email", target = "email")
     @Mapping(source = "roles", target = "roles")
     Utilisateur toEntity(KeycloakUsersList keycloakUsersList);
 

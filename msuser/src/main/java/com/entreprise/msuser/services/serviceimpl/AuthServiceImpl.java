@@ -120,44 +120,81 @@ public class AuthServiceImpl implements AuthInterface {
 
     @Override
     public ResponseEntity<String> resetPassword(ResetPassword request, Principal principal) {
-
+        // Vérification de l'authentification
         if (principal == null) {
-            throw new IllegalStateException("User is not authenticated");}
-        String username = principal.getName();
+            System.out.println("DEBUG: User is not authenticated (principal is null)");
+            throw new IllegalStateException("User is not authenticated");
+        }
 
+        String username = principal.getName();
+        String oldPassword = request.getOldPassword() != null ? request.getOldPassword().trim() : "";
+        String newPassword = request.getNewPassword() != null ? request.getNewPassword().trim() : "";
+
+        System.out.println("DEBUG principal.getName(): " + username);
+        System.out.println("DEBUG oldPassword: '" + oldPassword + "'");
+        System.out.println("DEBUG newPassword: '" + newPassword + "'");
+        System.out.println("DEBUG clientId: " + clientId);
+        System.out.println("DEBUG serverUrl: " + serverUrl);
+        System.out.println("DEBUG realm: " + realm);
+
+        // Construction de la requête d'authentification Keycloak (grant_type password)
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add(GRANT_TYPE, PASSWORD);
-        body.add(CLIENT_ID, clientId);
-        body.add(USERNAME, username);
-        body.add(PASSWORD, request.getOldPassword());
+        body.add("grant_type", "password");
+        body.add("client_id", clientId);
+        body.add("username", username); // Essaie aussi avec l'email si besoin
+        body.add("password", oldPassword);
 
-        HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(body, headers);
-        String tokenUrl = serverUrl + REALMS + realm + PROTOCOL_OPEN_ID_CONNECT_TOKEN;
-
-        try {
-            restTemplate.postForEntity(tokenUrl, tokenRequest, Map.class);
-        } catch (HttpClientErrorException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Old password is incorrect");
+        // Si le client Keycloak est confidential, tu dois ajouter le client_secret
+        if (clientSecret != null && !clientSecret.isEmpty()) {
+            body.add("client_secret", clientSecret);
+            System.out.println("DEBUG client_secret ajouté.");
         }
 
+        System.out.println("DEBUG body envoyé à Keycloak: " + body);
 
+        String tokenUrl = serverUrl + "/realms/" + realm + "/protocol/openid-connect/token";
+        System.out.println("DEBUG tokenUrl: " + tokenUrl);
+
+        // Vérification de l'ancien mot de passe auprès de Keycloak
+        try {
+            restTemplate.postForEntity(tokenUrl, body, Map.class);
+            System.out.println("DEBUG: Authentification Keycloak réussie avec oldPassword.");
+        } catch (HttpClientErrorException e) {
+            System.out.println("DEBUG Keycloak error: " + e.getResponseBodyAsString());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Old password is incorrect (Keycloak)");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne lors de la vérification du mot de passe.");
+        }
+
+        // Recherche de l'utilisateur dans Keycloak (par username)
         List<UserRepresentation> users = keycloak.realm(realm).users().search(username);
+        System.out.println("DEBUG utilisateurs trouvés: " + users.size());
         if (users.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         String userId = users.get(0).getId();
+        System.out.println("DEBUG userId Keycloak: " + userId);
+
+        // Préparation du nouveau mot de passe
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
-        credential.setValue(request.getNewPassword());
+        credential.setValue(newPassword);
         credential.setTemporary(false);
 
-        keycloak.realm(realm).users().get(userId).resetPassword(credential);
-        return ResponseEntity.ok("Password changed successfully");
+        // Reset du mot de passe dans Keycloak
+        try {
+            keycloak.realm(realm).users().get(userId).resetPassword(credential);
+            System.out.println("DEBUG: Mot de passe changé avec succès.");
+            return ResponseEntity.ok("Password changed successfully");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du changement du mot de passe.");
+        }
     }
-
 
     @Override
     public ResponseEntity<String> forgotPassword(String email) {
