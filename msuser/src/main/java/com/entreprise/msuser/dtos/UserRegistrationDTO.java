@@ -3,6 +3,8 @@ package com.entreprise.msuser.dtos;
 
 import lombok.*;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -12,6 +14,7 @@ public class UserRegistrationDTO {
     private String firstName;
     private String lastName;
     private String username;
+    private List<String> roles;
 
     @NonNull
     private String departementNom;

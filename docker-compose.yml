@@ -12,9 +12,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./initdb:/docker-entrypoint-initdb.d
 
-  zookeeper:
+  zookeeperr:
     image: zookeeper:3.8
-    container_name: zookeeper
+    container_name: zookeeperr
     ports:
       - "2181:2181"
       - "2888:2888"
@@ -32,7 +32,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
     depends_on:
-      - zookeeper
+      - zookeeperr
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.4
@@ -110,7 +110,7 @@ services:
     depends_on:
       - postgres
       - keycloak
-      - zookeeper
+      - zookeeperr
       - kafka
       - eurekaserver
       - configserver
@@ -156,7 +156,7 @@ services:
       - postgres
       - keycloak
       - eurekaserver
-      - zookeeper
+      - zookeeperr
       - kafka
       - configserver
       - msuser

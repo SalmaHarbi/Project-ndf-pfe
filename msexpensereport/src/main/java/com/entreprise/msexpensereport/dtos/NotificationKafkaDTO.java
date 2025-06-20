@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 public class NotificationKafkaDTO {
     private Long noteId;
     private String type;
-    private Long userId;
+    private String userId;
 }

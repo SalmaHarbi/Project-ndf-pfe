@@ -47,18 +47,15 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     private final UtilisateurRepository utilisateurRepository;
     private final UtilisateurMapper utilisateurMapper;
     private final DepartementRepository departementRepository;
-    private final KeycloakClient keycloakClient;
     private final KeycloakConfig keycloakConfig;
-    private Keycloak keycloak;
     private final RestTemplate restTemplate;
     private final KeycloakUtilisateurMapper keycloakUtilisateurMapper;
 
 
-    public UtilisateurServiceImpl(UtilisateurRepository utilisateurRepository, UtilisateurMapper utilisateurMapper, DepartementRepository departementRepository, KeycloakClient keycloakClient, KeycloakConfig keycloakConfig, RestTemplate restTemplate, KeycloakUtilisateurMapper keycloakUtilisateurMapper){
+    public UtilisateurServiceImpl(UtilisateurRepository utilisateurRepository, UtilisateurMapper utilisateurMapper, DepartementRepository departementRepository, KeycloakConfig keycloakConfig, RestTemplate restTemplate, KeycloakUtilisateurMapper keycloakUtilisateurMapper){
         this.utilisateurRepository=utilisateurRepository;
         this.utilisateurMapper=utilisateurMapper;
         this.departementRepository=departementRepository;
-        this.keycloakClient = keycloakClient;
         this.keycloakConfig = keycloakConfig;
         this.restTemplate = restTemplate;
         this.keycloakUtilisateurMapper = keycloakUtilisateurMapper;
@@ -91,6 +88,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 
 
+
     @Override
     public ResponseEntity<List<KeycloakUsersList>> getAllUsers() {
         List<UserRepresentation> users = keycloakConfig.keycloak()
@@ -101,40 +99,59 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
         List<KeycloakUsersList> userDtos = users.stream()
                 .map(user -> {
-                    // Retrieve roles of the user
+                    // Récupérer les rôles de realm
                     List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
                             .realms()
                             .realm(realm)
                             .users()
-                            .get(user.getId()) // Use user's ID to fetch their roles
+                            .get(user.getId())
                             .roles()
                             .realmLevel()
                             .listEffective();
 
-                    // Collect role names
-                    List<String> roleNames = realmRoles.stream()
-                            .map(RoleRepresentation::getName)
-                            .toList();
+                    // Récupérer les rôles de client (sécurisé)
+                    List<RoleRepresentation> clientRoles = new ArrayList<>();
+                    try {
+                        clientRoles = keycloakConfig.keycloak()
+                                .realms()
+                                .realm(realm)
+                                .users()
+                                .get(user.getId())
+                                .roles()
+                                .clientLevel(clientId)
+                                .listEffective();
+                    } catch (Exception e) {
+                         log.warn("Impossible de récupérer les rôles client pour user " + user.getUsername());
+                    }
+
+                    // Fusionner les noms de rôles
+                    List<String> roleNames = new ArrayList<>();
+                    if (realmRoles != null) {
+                        roleNames.addAll(realmRoles.stream().map(RoleRepresentation::getName).toList());
+                    }
+                    if (clientRoles != null) {
+                        roleNames.addAll(clientRoles.stream().map(RoleRepresentation::getName).toList());
+                    }
+
+                    // Gère l'absence d'attribut DEPARTMENT
+                    String departement = null;
+                    if (user.getAttributes() != null && user.getAttributes().get(DEPARTMENT) != null && !user.getAttributes().get(DEPARTMENT).isEmpty()) {
+                        departement = user.getAttributes().get(DEPARTMENT).get(0);
+                    }
 
                     return KeycloakUsersList.builder()
                             .username(user.getUsername())
                             .firstName(user.getFirstName())
                             .lastName(user.getLastName())
                             .email(user.getEmail())
-                            .departementNom(user.getAttributes().get(DEPARTMENT).get(0))
-                            .roles(roleNames) // Add roles to UserDto
+                            .departementNom(departement)
+                            .roles(roleNames)
                             .build();
                 })
                 .toList();
 
-
-
-       // userDtos.forEach(user -> userRepository.save(userMapper.userDtoToUser(user)));
         return ResponseEntity.ok(userDtos);
-
     }
-
-
 
 
     @Override
@@ -144,7 +161,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
         HttpHeaders headers = createFormUrlEncodedHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(adminToken); // Add the admin token to request's header
+        headers.setBearerAuth(adminToken);
 
         // Create the object with necessary fields.
         Map<String, Object> userPayload = new HashMap<>();
@@ -171,9 +188,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             throw new RuntimeException("Error creating user: " + response.getBody());
         }
 
-
-
-
         // Starting saving Users from Keycloak
         List<Utilisateur> listUsers;
         try {
@@ -189,7 +203,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
             // Map Keycloak's UserRepresentation objects to your DTO representation.
             List<KeycloakUsersList> userDtos = users.stream()
                     .map(user -> {
-                        // Retrieve roles for the user.
+                        // Retrieve roles for the user (realm roles)
                         List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
                                 .realms()
                                 .realm(realm)
@@ -199,10 +213,20 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                                 .realmLevel()
                                 .listEffective();
 
-                        // Collect role names.
-                        List<String> roleNames = realmRoles.stream()
-                                .map(RoleRepresentation::getName)
-                                .toList();
+                        // Retrieve client roles for the user (e.g., "projet-sec")
+                        List<RoleRepresentation> clientRoles = keycloakConfig.keycloak()
+                                .realms()
+                                .realm(realm)
+                                .users()
+                                .get(user.getId())
+                                .roles()
+                                .clientLevel("projet-sec")
+                                .listEffective();
+
+                        // Collect all role names (realm + client)
+                        List<String> roleNames = new ArrayList<>();
+                        roleNames.addAll(realmRoles.stream().map(RoleRepresentation::getName).toList());
+                        roleNames.addAll(clientRoles.stream().map(RoleRepresentation::getName).toList());
 
                         return KeycloakUsersList.builder()
                                 .username(user.getUsername())
@@ -236,9 +260,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         // Return the list of users retrieved from Keycloak.
         return listUsers;
     }
-
-
-
 
 
 

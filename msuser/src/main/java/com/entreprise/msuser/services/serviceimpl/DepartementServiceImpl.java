@@ -59,7 +59,7 @@ public class DepartementServiceImpl implements DepartementService {
     }
 
     @Override
-    public ApiResponse updateDepartement(Long id, DepDtoRq depDto) {
+    public ApiResponse updateDepartement(Long  id, DepDtoRq depDto) {
         Departement departement= departementRepository.findById(id).orElse(null);
         departementMapper.partialUpdate(depDto,departement);
         departementRepository.save(departement);
