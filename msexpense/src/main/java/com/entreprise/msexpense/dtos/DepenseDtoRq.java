@@ -33,7 +33,6 @@ public class DepenseDtoRq {
     private String device;
     @NotNull
     private BigDecimal tauxchange;
-    private BigDecimal montantconverti;
     @NotEmpty
     private String nomfournisseur;
     private String commentaire;

@@ -25,7 +25,7 @@ public class Ndfs {
     private String raisondurejet;
     private Float montanttotal;
     private Boolean statutDisable=true;
-    private String UserId;
+    private Long UserId;
     private Long depenseId;
 
     private UserDtoRs user;

@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UtilisateurRepository extends JpaRepository<Utilisateur,Long> {
@@ -16,4 +17,8 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur,Long> {
 
     @Query("SELECT c FROM Utilisateur c WHERE c.statut=:statut")
     List<Utilisateur> findAllUtilisateurByStatut(@Param("statut") Boolean statut);
+
+
+    Optional<Utilisateur> findByUsername(String username);
+
 }

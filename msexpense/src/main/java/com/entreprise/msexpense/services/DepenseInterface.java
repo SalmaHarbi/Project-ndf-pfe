@@ -3,6 +3,7 @@ package com.entreprise.msexpense.services;
 import com.entreprise.msexpense.dtos.ApiResponse;
 import com.entreprise.msexpense.dtos.DepenseDtoRq;
 import com.entreprise.msexpense.dtos.DepenseDtoRs;
+import com.entreprise.msexpense.entities.Depense;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,4 +20,6 @@ public interface DepenseInterface {
     BigDecimal getMontantTotalDesDepensesActives();
     List<Map<String, Object>> getMontantParCategorie();
     List<Map<String, Object>> getDepenseParMois();
+     List<Depense> findByNdfId(Long ndfId);
+
 }

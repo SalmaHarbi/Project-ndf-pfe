@@ -1,5 +1,6 @@
 package com.entreprise.msexpense.repositories;
 
+import com.entreprise.msexpense.dtos.DepenseDtoRs;
 import com.entreprise.msexpense.entities.Depense;
 import com.entreprise.msexpense.entities.Enum.Categorie;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,5 +32,6 @@ public interface DepenseRepository extends JpaRepository<Depense,Long> {
 
     Optional<Depense> findByNom(String nom);
 
+    List<Depense> findByNdfId(Long ndfId);
 
 }

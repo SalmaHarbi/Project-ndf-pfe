@@ -81,13 +81,17 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
 
     @Override
-    public UserDtoRs getById(Long id) {
+    public KeycloakUsersList getById(Long id) {
         Utilisateur utilisateur= utilisateurRepository.findById(id).orElse(null);
-        return utilisateurMapper.toDtoRs(utilisateur);
+        return keycloakUtilisateurMapper.toDto(utilisateur);
     }
 
 
-
+    public KeycloakUsersList findByUsername(String username) {
+        Utilisateur utilisateur = utilisateurRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return keycloakUtilisateurMapper.toDto(utilisateur);
+    }
 
     @Override
     public ResponseEntity<List<KeycloakUsersList>> getAllUsers() {
@@ -99,41 +103,30 @@ public class UtilisateurServiceImpl implements UtilisateurService {
 
         List<KeycloakUsersList> userDtos = users.stream()
                 .map(user -> {
-                    // Récupérer les rôles de realm
-                    List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
-                            .realms()
-                            .realm(realm)
-                            .users()
-                            .get(user.getId())
-                            .roles()
-                            .realmLevel()
-                            .listEffective();
-
-                    // Récupérer les rôles de client (sécurisé)
-                    List<RoleRepresentation> clientRoles = new ArrayList<>();
+                    List<String> roleNames = new ArrayList<>();
                     try {
-                        clientRoles = keycloakConfig.keycloak()
+                        // Récupérer UNIQUEMENT les rôles du client "projet-sec"
+                        List<RoleRepresentation> clientRoles = keycloakConfig.keycloak()
                                 .realms()
                                 .realm(realm)
                                 .users()
                                 .get(user.getId())
                                 .roles()
-                                .clientLevel(clientId)
+                                .clientLevel("projet-sec")  // nom du client
                                 .listEffective();
+
+                        if (clientRoles != null) {
+                            roleNames = clientRoles.stream()
+                                    .map(RoleRepresentation::getName)
+                                    .collect(Collectors.toList());
+                        }
                     } catch (Exception e) {
-                         log.warn("Impossible de récupérer les rôles client pour user " + user.getUsername());
+                        log.warn("Impossible de récupérer les rôles client pour user " + user.getUsername());
                     }
 
-                    // Fusionner les noms de rôles
-                    List<String> roleNames = new ArrayList<>();
-                    if (realmRoles != null) {
-                        roleNames.addAll(realmRoles.stream().map(RoleRepresentation::getName).toList());
-                    }
-                    if (clientRoles != null) {
-                        roleNames.addAll(clientRoles.stream().map(RoleRepresentation::getName).toList());
-                    }
+                    // Si tu veux n’afficher que le premier rôle (ex: "Employee") tu peux faire :
+                    // String mainRole = roleNames.isEmpty() ? null : roleNames.get(0);
 
-                    // Gère l'absence d'attribut DEPARTMENT
                     String departement = null;
                     if (user.getAttributes() != null && user.getAttributes().get(DEPARTMENT) != null && !user.getAttributes().get(DEPARTMENT).isEmpty()) {
                         departement = user.getAttributes().get(DEPARTMENT).get(0);
@@ -145,7 +138,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
                             .lastName(user.getLastName())
                             .email(user.getEmail())
                             .departementNom(departement)
-                            .roles(roleNames)
+                            .roles(roleNames) // Ici tu n’auras que "Employee" ou autres rôles métiers du client
                             .build();
                 })
                 .toList();
@@ -153,6 +146,77 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         return ResponseEntity.ok(userDtos);
     }
 
+    @Override
+    public ResponseEntity<List<KeycloakUsersList>> getUsersByRole(String roleName) {
+        // 1. Récupérer l'ID technique du client
+        String clientUUID = keycloakConfig.keycloak()
+                .realms()
+                .realm(realm)
+                .clients()
+                .findByClientId("projet-sec")
+                .get(0)
+                .getId();
+
+        // 2. Récupérer tous les users Keycloak
+        List<UserRepresentation> users = keycloakConfig.keycloak()
+                .realms()
+                .realm(realm)
+                .users()
+                .list();
+
+        // 3. Filtrer ceux qui ont le rôle demandé côté client
+        List<KeycloakUsersList> filteredUsers = users.stream()
+                .map(user -> {
+                    List<String> allRoles = new ArrayList<>();
+                    try {
+                        // Rôles du client
+                        List<RoleRepresentation> clientRoles = keycloakConfig.keycloak()
+                                .realms()
+                                .realm(realm)
+                                .users()
+                                .get(user.getId())
+                                .roles()
+                                .clientLevel(clientUUID)
+                                .listEffective();
+                        List<String> clientRoleNames = clientRoles.stream()
+                                .map(RoleRepresentation::getName)
+                                .collect(Collectors.toList());
+
+                        // Rôles du realm
+                        List<RoleRepresentation> realmRoles = keycloakConfig.keycloak()
+                                .realms()
+                                .realm(realm)
+                                .users()
+                                .get(user.getId())
+                                .roles()
+                                .realmLevel()
+                                .listEffective();
+                        allRoles = new ArrayList<>(realmRoles.stream().map(RoleRepresentation::getName).toList());
+                        allRoles.addAll(clientRoleNames);
+
+                    } catch (Exception e) {
+                        log.warn("Impossible de récupérer les rôles pour user " + user.getUsername(), e);
+                    }
+
+                    String departement = null;
+                    if (user.getAttributes() != null && user.getAttributes().get(DEPARTMENT) != null && !user.getAttributes().get(DEPARTMENT).isEmpty()) {
+                        departement = user.getAttributes().get(DEPARTMENT).get(0);
+                    }
+
+                    return KeycloakUsersList.builder()
+                            .username(user.getUsername())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .email(user.getEmail())
+                            .departementNom(departement)
+                            .roles(allRoles)
+                            .build();
+                })
+                .filter(userDto -> userDto.getRoles() != null && userDto.getRoles().contains(roleName))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(filteredUsers);
+    }
 
     @Override
     public List<Utilisateur> signUp(UserRegistrationDTO dto) {

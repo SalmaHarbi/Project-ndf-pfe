@@ -26,26 +26,24 @@ public class UtilisateurController {
 
 
     @GetMapping("/get/{id}")
-    public UserDtoRs getById(@PathVariable("id") Long id) {
+    public KeycloakUsersList getById(@PathVariable("id") Long id) {
         return utilisateurService.getById(id);
     }
 
+    @GetMapping("/role/{roleName}")
+    public ResponseEntity<List<KeycloakUsersList>> getUsersByRole(@PathVariable String roleName) {
+        return utilisateurService.getUsersByRole(roleName);
+    }
     @GetMapping("/getAllEmplDep")
     public List<UserDepDto> getAllUtilisateur() {
         return utilisateurService.getAllUtilisateur();
     }
 
-    /**
-     *
-     *   @GetMapping("/getAllEmployee")
-     *     public List<UserDtoRs> getAllUsers() {
-     *         return utilisateurService.getEmployee();
-     *     }
-     *
-     */
-
-
-
+    @GetMapping("/username/{username}")
+    public ResponseEntity<KeycloakUsersList> getUserByUsername(@PathVariable String username) {
+        KeycloakUsersList userDto = utilisateurService.findByUsername(username);
+        return ResponseEntity.ok(userDto);
+    }
 
     @PostMapping("/add")
     public ApiResponse createUser(@RequestBody UserDtoRq userDtoRq) {

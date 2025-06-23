@@ -2,7 +2,10 @@ package com.entreprise.msexpense.controllers;
 
 
 import com.entreprise.msexpense.dtos.*;
+import com.entreprise.msexpense.entities.Depense;
 import com.entreprise.msexpense.feign.NdfRestClient;
+import com.entreprise.msexpense.mappers.DepenseMapper;
+import com.entreprise.msexpense.services.DepenseInterface;
 import com.entreprise.msexpense.services.serviceImpl.DepenseImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,11 +21,21 @@ public class DepenseController {
 
     private final NdfRestClient ndfRestClient;
     private final DepenseImpl depenseImpl;
+private  final DepenseMapper depenseMapper;
 
-
-    public DepenseController(NdfRestClient ndfRestClient, DepenseImpl depenseImpl){
+    public DepenseController(NdfRestClient ndfRestClient,
+                             DepenseImpl depenseImpl,
+                             DepenseMapper depenseMapper){
         this.ndfRestClient=ndfRestClient;
         this.depenseImpl = depenseImpl;
+        this.depenseMapper=depenseMapper;
+    }
+
+
+    @GetMapping("/by-ndf/{ndfId}")
+    public List<Depense> getDepensesByNdfId(@PathVariable Long ndfId) {
+        List<Depense> depenses = depenseImpl.findByNdfId(ndfId);
+        return depenses.stream().map(d -> depenseMapper.toDtos(d)).toList(); // Utilise ton mapper DTO
     }
 
     @GetMapping("/get/{id}")

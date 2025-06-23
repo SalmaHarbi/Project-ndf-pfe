@@ -43,7 +43,18 @@ public class DepenseImpl implements DepenseInterface {
 
     @Override
     public ApiResponse addDepense(DepenseDtoRq depenseDto) {
-        Depense depense=depenseMapper.toEntity(depenseDto);
+        Depense depense = depenseMapper.toEntity(depenseDto);
+
+        // DEBUG
+        System.out.println("Montant: " + depense.getMontant());
+        System.out.println("Tauxchange: " + depense.getTauxchange());
+
+        if (depense.getMontant() != null && depense.getTauxchange() != null) {
+            depense.setMontantconverti(depense.getMontant().multiply(depense.getTauxchange()));
+        } else {
+            depense.setMontantconverti(BigDecimal.ZERO);
+        }
+
         depenseRepository.save(depense);
         return ApiResponse.builder()
                 .id(depense.getId())
@@ -117,5 +128,10 @@ public class DepenseImpl implements DepenseInterface {
         }
 
         return reponse;
+    }
+
+    @Override
+    public List<Depense> findByNdfId(Long ndfId) {
+        return depenseRepository.findByNdfId(ndfId);
     }
 }

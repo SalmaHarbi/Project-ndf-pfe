@@ -1,4 +1,4 @@
-package com.entreprise.msuser.dtos;
+package com.entreprise.msexpensereport.dtos;
 
 import lombok.*;
 
@@ -12,8 +12,6 @@ import java.util.List;
 
 
 public class KeycloakUsersList {
-
-
 
     private String firstName;
     private String lastName;

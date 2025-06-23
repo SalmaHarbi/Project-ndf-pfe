@@ -17,6 +17,7 @@ public interface DepenseRestClient {
     @GetMapping("/depense/getAll")
     List<DepenseDtoRs> getAllDepenses();
 
-
+    @GetMapping("/depense/by-ndf/{ndfId}")
+    List<DepenseDtoRs> getDepensesByNdfId(@PathVariable("ndfId") Long ndfId);
 
 }

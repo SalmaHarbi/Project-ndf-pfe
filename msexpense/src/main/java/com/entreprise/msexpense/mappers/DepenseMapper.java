@@ -12,6 +12,8 @@ public interface DepenseMapper {
 
     DepenseDtoRs toDto(Depense depense);
 
+    Depense toDtos(Depense depense);
+
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Depense partialUpdate(DepenseDtoRq depenseDto, @MappingTarget Depense depense);
 }
