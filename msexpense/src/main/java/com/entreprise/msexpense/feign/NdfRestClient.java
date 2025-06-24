@@ -11,11 +11,11 @@ import java.util.List;
 @FeignClient(name = "msexpensereport", configuration = FeignClientInterceptor.class)
 public interface NdfRestClient {
 
-    @GetMapping("/ndf/getId/{id}")
-    Ndfs getId(@PathVariable("id") Long id);
+    @GetMapping("/ndf/get/{id}")
+    Ndfs getById(@PathVariable("id") Long id);
 
-    @GetMapping("/ndf/getAl")
-    List<Ndfs> getAll();
+    @GetMapping("/ndf/getAll")
+    List<Ndfs> getAllNoteDeFrais();
 
 
 }

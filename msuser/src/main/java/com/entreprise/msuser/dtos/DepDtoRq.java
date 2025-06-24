@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DepDtoRq {
 
+    private Long id;
     @NotEmpty(message = "nom should not be null")
     private String nom;
     private String image;

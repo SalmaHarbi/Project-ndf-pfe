@@ -1,6 +1,7 @@
 package com.entreprise.msuser.entities;
 
 
+import com.entreprise.msuser.dtos.KeycloakUsersList;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DepartementServiceImpl implements DepartementService {
@@ -50,12 +51,20 @@ public class DepartementServiceImpl implements DepartementService {
 
     @Override
     public ApiResponse deleteDepartement(Long id) {
-        Departement departement = departementRepository.findById(id).orElse(null);
-        return ApiResponse.builder()
-                .id(departement.getId())
-                .message("Department has been deleted successfuly")
-                .build();
+        Optional<Departement> departementOpt = departementRepository.findById(id);
+        if (!departementOpt.isPresent()) {
+            return ApiResponse.builder()
+                    .id(id)
+                    .message("Department not found")
+                    .build();
+        }
 
+        departementRepository.deleteById(id);
+
+        return ApiResponse.builder()
+                .id(id)
+                .message("Department has been deleted successfully")
+                .build();
     }
 
     @Override

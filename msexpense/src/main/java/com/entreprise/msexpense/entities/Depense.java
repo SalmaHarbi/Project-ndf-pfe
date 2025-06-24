@@ -1,5 +1,6 @@
 package com.entreprise.msexpense.entities;
 
+import com.entreprise.msexpense.dtos.Ndfs;
 import com.entreprise.msexpense.entities.Enum.Categorie;
 import com.entreprise.msexpense.entities.Enum.Indicateurfiscabilte;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @AllArgsConstructor @NoArgsConstructor
 @Data
@@ -45,6 +47,7 @@ public class Depense {
     private Collection<Justificatif> justificatifs;
 
     private Long ndfId;
+
 
     @OneToOne(mappedBy = "depense")
     @JsonIgnore

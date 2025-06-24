@@ -41,24 +41,38 @@ public class DepenseImpl implements DepenseInterface {
         return dtos;
     }
 
-    @Override
-    public ApiResponse addDepense(DepenseDtoRq depenseDto) {
-        Depense depense = depenseMapper.toEntity(depenseDto);
-
-        // DEBUG
-        System.out.println("Montant: " + depense.getMontant());
-        System.out.println("Tauxchange: " + depense.getTauxchange());
-
+    private void calculerMontantConverti(Depense depense) {
         if (depense.getMontant() != null && depense.getTauxchange() != null) {
             depense.setMontantconverti(depense.getMontant().multiply(depense.getTauxchange()));
         } else {
             depense.setMontantconverti(BigDecimal.ZERO);
         }
+    }
+
+    @Override
+    public ApiResponse addDepense(DepenseDtoRq depenseDto) {
+        Depense depense = depenseMapper.toEntity(depenseDto);
+
+        calculerMontantConverti(depense); // <--- Appel ici
 
         depenseRepository.save(depense);
         return ApiResponse.builder()
                 .id(depense.getId())
                 .message("NoteDeFrais has been saved successfuly")
+                .build();
+    }
+
+    @Override
+    public ApiResponse updateDepense(Long id, DepenseDtoRq depenseDto) {
+        Depense depense = depenseRepository.findById(id).orElse(null);
+        depenseMapper.partialUpdate(depenseDto, depense);
+
+        calculerMontantConverti(depense); // <--- Appel ici aussi
+
+        depenseRepository.save(depense);
+        return ApiResponse.builder()
+                .id(depense.getId())
+                .message("Depense has been updated successfuly")
                 .build();
     }
 
@@ -73,17 +87,7 @@ public class DepenseImpl implements DepenseInterface {
                 .build();
     }
 
-    @Override
-    public ApiResponse updateDepense(Long id, DepenseDtoRq depenseDto) {
-        Depense depense= depenseRepository.findById(id).orElse(null);
-        depenseMapper.partialUpdate(depenseDto,depense);
-        depenseRepository.save(depense);
-        return ApiResponse.builder()
-                .id(depense.getId())
-                .message("Depense has been updated successfuly")
-                .build();
 
-    }
     @Override
     public BigDecimal getMontantTotalDesDepensesActives() {
         return depenseRepository.getTotalMontantConvertiByStatut(true);

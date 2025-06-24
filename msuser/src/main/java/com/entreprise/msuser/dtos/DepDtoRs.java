@@ -15,6 +15,7 @@ import java.util.Collection;
 @Builder
 public class DepDtoRs {
 
+    private Long id;
     @NotEmpty(message = "nom should not be null")
     private String nom;
 
@@ -22,5 +23,5 @@ public class DepDtoRs {
     private String centredecout;
     private String image;
 
-    private Collection<UserDepDto> utilisateurs;
+    private Collection<KeycloakUsersList> utilisateurs;
 }

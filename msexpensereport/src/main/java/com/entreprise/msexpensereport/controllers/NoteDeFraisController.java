@@ -54,8 +54,8 @@ public class NoteDeFraisController {
 
         if (ndf.getUserId() != null && ndf.getDepenseId() != null) {
             UserDtoRs user = userRestClient.getById(ndf.getUserId());
-            DepenseDtoRs depenseDtoRs = depenseRestClient.getDepenseById(ndf.getDepenseId());
-            ndf.setUser(user);
+            DepenseDtoRs depenseDtoRs = depenseRestClient.getById(ndf.getDepenseId());
+            ndf.setUserDtoRs(user);
             ndf.setDepenses(depenseDtoRs);
         }
 
@@ -68,8 +68,9 @@ public class NoteDeFraisController {
         for (Ndfs ndf : ndfs) {
             if (ndf.getUserId() != null && ndf.getDepenseId() != null) {
                 UserDtoRs user = userRestClient.getById(ndf.getUserId());
-                DepenseDtoRs depenseDtoRs = depenseRestClient.getDepenseById(ndf.getDepenseId());
-                ndf.setUser(user);
+                DepenseDtoRs depenseDtoRs = depenseRestClient.getById(ndf.getDepenseId());
+                System.out.println("Depense reçue du Feign : " + depenseDtoRs);
+                ndf.setUserDtoRs(user);
                 ndf.setDepenses(depenseDtoRs);
             }
         }

@@ -41,7 +41,7 @@ public class NoteDeFrais {
 
     private Boolean statutDisable=true;
 
-    private String userId;
+    private Long userId;
 
     @Transient
     private UserDtoRs userDtoRs;

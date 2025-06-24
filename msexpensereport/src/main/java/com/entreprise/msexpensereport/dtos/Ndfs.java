@@ -28,6 +28,6 @@ public class Ndfs {
     private Long UserId;
     private Long depenseId;
 
-    private UserDtoRs user;
+    private UserDtoRs userDtoRs;
     private DepenseDtoRs depenses;
 }

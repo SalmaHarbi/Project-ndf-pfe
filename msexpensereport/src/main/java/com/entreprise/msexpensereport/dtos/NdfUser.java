@@ -22,7 +22,7 @@ public class NdfUser {
     private String raisondurejet;
     private Float montanttotal;
     private Boolean statutDisable=true;
-    private String userId;
+    private Long userId;
     private Long depenseId;
     private UserDtoRs userDtoRs;
 }

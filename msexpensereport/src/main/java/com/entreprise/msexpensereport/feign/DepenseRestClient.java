@@ -12,12 +12,10 @@ import java.util.List;
 public interface DepenseRestClient {
 
     @GetMapping("/depense/get/{id}")
-    DepenseDtoRs getDepenseById(@PathVariable("id") Long id);
+    DepenseDtoRs getById(@PathVariable Long id);
 
     @GetMapping("/depense/getAll")
     List<DepenseDtoRs> getAllDepenses();
 
-    @GetMapping("/depense/by-ndf/{ndfId}")
-    List<DepenseDtoRs> getDepensesByNdfId(@PathVariable("ndfId") Long ndfId);
 
 }
